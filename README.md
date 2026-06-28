@@ -2,7 +2,7 @@
 
 Version 0.1 — Draft
 
-An agent-native specification framework for software systems.
+An agent-native specification framework for the software development lifecycle.
 
 ---
 
@@ -238,3 +238,10 @@ It can be used to:
 The `resource` field defines the external system where this spec is published or mirrored.
 
 In an OKF-based system, this file is a node in a larger structured knowledge graph that evolves alongside the system. It represents intent, behavior, and constraints in a form that can be interpreted, executed, and updated over time.
+
+---
+
+## References
+
+- Google Cloud Blog: How the Open Knowledge Format can improve data sharing: https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing
+- GoogleCloudPlatform OKF Spec: https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md
