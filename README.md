@@ -16,7 +16,7 @@ Teams can now produce working software quickly. What used to take weeks can be s
 
 The constraint is alignment.
 
-As more of the system is produced by agents, ambiguity becomes more expensive. A missing requirement or unclear rule doesn’t stay local—it gets replicated across code, tests, APIs, and infrastructure generated from the same misunderstanding.
+As more of the system is produced by agents, ambiguity becomes more expensive. A missing requirement or unclear rule no longer stays local. It gets replicated across the code, tests, APIs, and infrastructure generated from the same misunderstanding.
 
 Small gaps in understanding lead to large system drift:
 
@@ -29,17 +29,15 @@ Small gaps in understanding lead to large system drift:
 
 The faster we generate software, the more important it becomes that we define *what we actually mean* before we generate it.
 
-Modern software development already reflects this reality. Requirements are not static—they emerge. Teams learn by building, and systems evolve as understanding improves.
+Modern software development already reflects this reality. Requirements emerge as teams learn by building, and systems evolve as that understanding improves.
 
-The goal is not to eliminate this iteration.
-
-The goal is to make it explicit, structured, and shareable.
+This iteration is healthy, and the aim is to make it explicit, structured, and shareable instead of leaving it implicit.
 
 This document defines a way to treat software development as a shared knowledge system between Product, Engineering, QA, and AI agents.
 
 Instead of static requirement documents, specs become living context that evolves alongside the system they describe.
 
-The framework uses and extends the Open Knowledge Format (OKF) to structure this context so it can be consumed by both humans and agents. The goal is not more documentation. It is a consistent, machine-readable model of intent, behavior, and constraints that stays synchronized with the system as it changes.
+The framework uses and extends the Open Knowledge Format (OKF) to structure this context so it can be consumed by both humans and agents. The result is a consistent, machine-readable model of intent, behavior, and constraints that stays synchronized with the system as it changes, rather than another pile of documentation to maintain by hand.
 
 ---
 
@@ -85,9 +83,7 @@ For AI agents, the spec becomes executable context:
 * how components should behave
 * how to validate correctness
 
-A spec is not just a feature description.
-
-It is a shared model of the system that connects intent to implementation.
+Beyond describing a feature, a spec is a shared model of the system that connects intent to implementation.
 
 This introduces a natural tension:
 
@@ -97,9 +93,7 @@ Too little detail leads to inconsistent interpretations across teams and agents.
 
 Too much rigidity leads to outdated assumptions and constant rewriting.
 
-A useful spec doesn’t try to freeze the system.
-
-It tracks how understanding of the system changes over time.
+A useful spec tracks how understanding of the system changes over time instead of trying to freeze it in place.
 
 ---
 

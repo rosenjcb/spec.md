@@ -61,8 +61,8 @@ adjustment flows (Out of Scope for this example).
 ### QA Test Cases
 
 A requirement is a higher-level statement, validated by **one or more** test
-cases. Here `FR-2` (pricing) owns `TC-2`–`TC-4`, and `FR-4` (validation) owns
-`TC-6`–`TC-8`.
+cases. Here `FR-2` (pricing) owns `TC-2` through `TC-4`, and `FR-4`
+(validation) owns `TC-6` through `TC-8`.
 
 | Test ID | Requirement | Scenario | Expected Outcome |
 |---------|------------|----------|------------------|
