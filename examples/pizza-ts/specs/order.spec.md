@@ -20,7 +20,7 @@ not produced here.
 Once created, an order is immutable except through explicit cancellation or
 adjustment flows (Out of Scope for this example).
 
-### `Definitions`
+### Definitions
 
 - Order: A placed pizza purchase, identified by `id`.
 - Customer: The user who placed the order (`customerId`).
@@ -31,7 +31,7 @@ adjustment flows (Out of Scope for this example).
 - Placed At: Timestamp when the order is committed (ISO 8601).
 - Status: Lifecycle state of the order (CREATED, PAID, FULFILLED, CANCELLED).
 
-### `Scope`
+### Scope
 
 ## In Scope
 - Expose the pizza menu and per-size pricing
@@ -48,7 +48,7 @@ adjustment flows (Out of Scope for this example).
 - Durable persistence (database)
 - Authentication and authorization
 
-### `Functional Requirements`
+### Functional Requirements
 
 | ID   | Requirement |
 |------|------------|
@@ -58,15 +58,23 @@ adjustment flows (Out of Scope for this example).
 | FR-4 | Reject requests missing a customer, items, or with invalid items |
 | FR-5 | Retrieve a previously created order by its id |
 
-### `QA Test Cases`
+### QA Test Cases
+
+A requirement is a higher-level statement, validated by **one or more** test
+cases. Here `FR-2` (pricing) owns `TC-2`–`TC-4`, and `FR-4` (validation) owns
+`TC-6`–`TC-8`.
 
 | Test ID | Requirement | Scenario | Expected Outcome |
 |---------|------------|----------|------------------|
 | TC-1 | FR-1 | Valid request submitted | Order created with status CREATED |
-| TC-2 | FR-2 | Large pizza, quantity 2 | Total reflects size multiplier and quantity |
-| TC-3 | FR-3 | Mutate returned order object | Stored order is unchanged |
-| TC-4 | FR-4 | Missing customerId or empty items | 400 validation error |
-| TC-5 | FR-5 | Fetch existing / unknown id | 200 with order / 404 not found |
+| TC-2 | FR-2 | Small pizza priced | Unit price equals the base price |
+| TC-3 | FR-2 | Larger size priced | Unit price scaled by the size multiplier, rounded |
+| TC-4 | FR-2 | Order with several line items | Total sums each line (unit price × quantity) |
+| TC-5 | FR-3 | Mutate returned order object | Stored order is unchanged |
+| TC-6 | FR-4 | Missing customerId | 400 validation error |
+| TC-7 | FR-4 | Empty items list | 400 validation error |
+| TC-8 | FR-4 | Unknown pizza or non-positive quantity | 400 validation error |
+| TC-9 | FR-5 | Fetch existing / unknown id | 200 with order / 404 not found |
 
 ### System Usage Notes (Agent + OKF Context)
 

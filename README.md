@@ -105,6 +105,8 @@ It tracks how understanding of the system changes over time.
 
 ## Example
 
+The example below is structured as an [Open Knowledge Format (OKF)](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing) document — the format spec.md builds on to make specs consumable by both humans and agents.
+
 To make this concrete, we’ll break the `order.spec.md` into modular sections. Each section is self-contained and represents a unit of the spec.
 
 ---
@@ -152,7 +154,7 @@ This defines the system’s purpose and lifecycle boundaries.
 ---
 
 ```md
-### `Definitions`
+### Definitions
 
 - Order: A completed purchase transaction.
 - Customer: The user who placed the order (`customer_id`).
@@ -166,7 +168,7 @@ This establishes shared vocabulary used across Product, Engineering, QA, and age
 ---
 
 ```md
-### `Scope`
+### Scope
 
 ## In Scope
 - Create orders from validated checkout sessions
@@ -187,7 +189,7 @@ This defines system boundaries and prevents responsibility drift.
 ---
 
 ```md
-### `Functional Requirements`
+### Functional Requirements
 
 | ID   | Requirement |
 |------|------------|
@@ -200,26 +202,35 @@ This defines system boundaries and prevents responsibility drift.
 
 These define system behavior in testable units.
 
-Each requirement should map directly to implementation and validation logic.
+A functional requirement is a *higher-level* statement of intent. It maps to
+implementation and validation logic, and a single requirement is usually proven
+by several test cases.
 
 ---
 
 
 ```md
-### `QA Test Cases`
+### QA Test Cases
 
 | Test ID | Requirement | Scenario | Expected Outcome |
 |---------|------------|----------|------------------|
 | TC-1 | FR-1 | Valid checkout completes | Order created successfully |
 | TC-2 | FR-2 | Discount applied | Total reflects discount |
-| TC-3 | FR-3 | Modify order after creation | Request rejected |
-| TC-4 | FR-4 | Missing customer_id | Validation error |
-| TC-5 | FR-5 | Order created | Event emitted within SLA |
+| TC-3 | FR-2 | Tax applied | Total includes tax |
+| TC-4 | FR-3 | Modify order after creation | Request rejected |
+| TC-5 | FR-4 | Missing customer_id | Validation error |
+| TC-6 | FR-5 | Order created | Event emitted within SLA |
 ```
 
 These are executable validation conditions derived from requirements.
 
 They form the bridge between spec and automated verification.
+
+Note the **Requirement** column: a single functional requirement can own many
+test cases. Above, `FR-2` ("compute totals correctly") is proven by both `TC-2`
+(discounts) and `TC-3` (tax) — and a real pricing requirement might add cases
+for rounding, multiple line items, and currency. A requirement expresses
+higher-level intent; the test cases are the concrete checks that prove it.
 
 ---
 

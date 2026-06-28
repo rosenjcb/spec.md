@@ -32,8 +32,8 @@ pizza-ts/
 │   └── index.ts          # server entrypoint
 ├── test/
 │   ├── menu.test.ts      # pricing units
-│   ├── orders.test.ts    # order service units (TC-1..TC-4)
-│   └── app.test.ts       # HTTP-level tests (TC-1,2,4,5)
+│   ├── orders.test.ts    # order service units (TC-1, TC-4..TC-9)
+│   └── app.test.ts       # HTTP-level tests (TC-1, TC-2, TC-6, TC-9)
 └── http/                 # live integration requests (.http + httpyac)
 ```
 
@@ -77,10 +77,11 @@ httpyac, with assertions tied to the spec's QA Test Cases. See
 ## How this maps to the spec
 
 Every requirement and test case in [`specs/order.spec.md`](specs/order.spec.md)
-has a home in the code:
+has a home in the code. A requirement is higher-level than a single check, so
+one `FR` can own several `TC`s:
 
-- **FR-1 / TC-1** → `OrderStore.create` + `POST /orders`
-- **FR-2 / TC-2** → `unitPriceFor`, `SIZE_MULTIPLIER`, total computation
-- **FR-3 / TC-3** → `structuredClone` on store read/write (immutability)
-- **FR-4 / TC-4** → validation in `priceItem` / `OrderStore.create`
-- **FR-5 / TC-5** → `OrderStore.get` + `GET /orders/:id`
+- **FR-1** (TC-1) → `OrderStore.create` + `POST /orders`
+- **FR-2** (TC-2, TC-3, TC-4) → `unitPriceFor`, `SIZE_MULTIPLIER`, total computation
+- **FR-3** (TC-5) → `structuredClone` on store read/write (immutability)
+- **FR-4** (TC-6, TC-7, TC-8) → validation in `priceItem` / `OrderStore.create`
+- **FR-5** (TC-9) → `OrderStore.get` + `GET /orders/:id`

@@ -52,7 +52,7 @@ describe("pizza-ts HTTP API", () => {
     expect(fetched.id).toBe(created.id);
   });
 
-  it("[TC-4] Given an invalid request, when POST /orders, then 400 is returned", async () => {
+  it("[TC-6] Given an invalid request, when POST /orders, then 400 is returned", async () => {
     const res = await fetch(`${baseUrl}/orders`, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -61,7 +61,7 @@ describe("pizza-ts HTTP API", () => {
     expect(res.status).toBe(400);
   });
 
-  it("[TC-5] Given an unknown id, when GET /orders/:id, then 404 is returned", async () => {
+  it("[TC-9] Given an unknown id, when GET /orders/:id, then 404 is returned", async () => {
     const res = await fetch(`${baseUrl}/orders/nope`);
     expect(res.status).toBe(404);
   });

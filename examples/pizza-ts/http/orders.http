@@ -11,7 +11,7 @@ client.test("[smoke] Given the service, when GET /health, then it responds 200",
 });
 %}
 
-### Browse the menu (FR-2)
+### Browse the menu (TC-2)
 GET {{host}}/menu
 
 > {%
@@ -21,7 +21,7 @@ client.test("[TC-2] Given the menu, when GET /menu, then it is non-empty", funct
 });
 %}
 
-### Create an order (TC-1, TC-2)
+### Create an order (TC-1, TC-4)
 # @name createOrder
 POST {{host}}/orders
 Content-Type: application/json
@@ -39,22 +39,22 @@ client.test("[TC-1] Given a valid request, when POST /orders, then the order is 
   client.assert(response.status === 201, "expected 201");
   client.assert(response.body.status === "CREATED", "expected CREATED");
 });
-client.test("[TC-2] Given priced line items, when the order is created, then the total reflects size and quantity", function () {
+client.test("[TC-4] Given priced line items, when the order is created, then the total reflects size and quantity", function () {
   client.assert(response.body.total === 4420, "expected total 4420 cents");
 });
 client.global.set("orderId", response.body.id);
 %}
 
-### Fetch the created order (TC-5)
+### Fetch the created order (TC-9)
 GET {{host}}/orders/{{orderId}}
 
 > {%
-client.test("[TC-5] Given a created order, when GET /orders/:id, then it is returned", function () {
+client.test("[TC-9] Given a created order, when GET /orders/:id, then it is returned", function () {
   client.assert(response.status === 200, "expected 200");
 });
 %}
 
-### Reject an invalid order (TC-4)
+### Reject an invalid order (TC-6)
 POST {{host}}/orders
 Content-Type: application/json
 
@@ -64,16 +64,16 @@ Content-Type: application/json
 }
 
 > {%
-client.test("[TC-4] Given an invalid request, when POST /orders, then it responds 400", function () {
+client.test("[TC-6] Given an invalid request, when POST /orders, then it responds 400", function () {
   client.assert(response.status === 400, "expected 400");
 });
 %}
 
-### Unknown order returns 404 (TC-5)
+### Unknown order returns 404 (TC-9)
 GET {{host}}/orders/does-not-exist
 
 > {%
-client.test("[TC-5] Given an unknown id, when GET /orders/:id, then it responds 404", function () {
+client.test("[TC-9] Given an unknown id, when GET /orders/:id, then it responds 404", function () {
   client.assert(response.status === 404, "expected 404");
 });
 %}

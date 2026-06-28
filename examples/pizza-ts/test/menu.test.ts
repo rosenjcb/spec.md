@@ -11,7 +11,7 @@ describe("menu", () => {
     expect(findMenuItem("margherita")?.name).toBe("Margherita");
   });
 
-  it("[TC-2] Given an unknown pizza id, when it is looked up, then nothing is returned", () => {
+  it("[TC-8] Given an unknown pizza id, when it is looked up, then nothing is returned", () => {
     expect(findMenuItem("anchovy-surprise")).toBeUndefined();
   });
 
@@ -20,7 +20,7 @@ describe("menu", () => {
     expect(unitPriceFor(margherita, "small")).toBe(900);
   });
 
-  it("[TC-2] Given a larger size, when it is priced, then the base price is scaled and rounded", () => {
+  it("[TC-3] Given a larger size, when it is priced, then the base price is scaled and rounded", () => {
     const margherita = findMenuItem("margherita")!;
     expect(unitPriceFor(margherita, "medium")).toBe(1170); // 900 * 1.3
     expect(unitPriceFor(margherita, "large")).toBe(1440); // 900 * 1.6

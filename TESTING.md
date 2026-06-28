@@ -12,6 +12,10 @@ A `*.spec.md` defines two things that tests care about:
 - **QA Test Cases** (`TC-N`) — executable validation conditions derived from
   those requirements.
 
+An `FR-N` is the higher-level intent; it is typically validated by **several**
+`TC-N`s (e.g. a pricing requirement covered by cases for size, quantity, and
+rounding). Each `TC-N`, in turn, may have one or more tests.
+
 Tests are how those `TC-N` rows become real. The convention below makes the link
 explicit and machine-traceable, without coupling you to any one test runner.
 
@@ -129,6 +133,6 @@ proves the logic, the other proves the wiring. Both point at the same spec row.
 - [ ] Names read as Given / When / Then where it helps (optional).
 
 For a worked example, see [`examples/pizza-ts`](./examples/pizza-ts): one
-[`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) with `TC-1..TC-5`,
+[`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) with `TC-1..TC-9`,
 mirrored by tagged unit tests in `test/` and tagged integration requests in
 `http/`.
