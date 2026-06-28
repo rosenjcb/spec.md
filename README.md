@@ -111,7 +111,7 @@ To make this concrete, we’ll break the `order.spec.md` into modular sections. 
 
 ---
 
-### `order.spec.md (metadata)`
+### order.spec.md (metadata)
 
 ```yaml
 ---
@@ -231,24 +231,6 @@ test cases. Above, `FR-2` ("compute totals correctly") is proven by both `TC-2`
 (discounts) and `TC-3` (tax) — and a real pricing requirement might add cases
 for rounding, multiple line items, and currency. A requirement expresses
 higher-level intent; the test cases are the concrete checks that prove it.
-
----
-
-### System Usage Notes (Agent + OKF Context)
-
-This spec is designed to be consumed by both engineers and AI agents.
-
-It can be used to:
-
-- generate services and APIs
-- derive database schemas
-- produce test suites
-- validate implementation correctness
-- synchronize external documentation via `resource`
-
-The `resource` field defines the external system where this spec is published or mirrored.
-
-In an OKF-based system, this file is a node in a larger structured knowledge graph that evolves alongside the system. It represents intent, behavior, and constraints in a form that can be interpreted, executed, and updated over time.
 
 ---
 
