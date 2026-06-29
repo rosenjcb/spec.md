@@ -24,18 +24,25 @@ tests, and live HTTP integration requests.
 pizza-ts/
 ├── specs/
 │   └── order.spec.md     # the OKF spec — the source of truth
+├── shared/
+│   └── types.ts          # shared domain types (mirror the Definitions)
 ├── src/
-│   ├── types.ts          # domain types (mirror the Definitions)
 │   ├── menu.ts           # catalogue + size pricing (FR-2)
 │   ├── orders.ts         # validation, pricing, immutable store (FR-1,3,4)
 │   ├── app.ts            # Express routes (FR-1,2,5)
 │   └── index.ts          # server entrypoint
 ├── test/
-│   ├── menu.test.ts      # pricing units
-│   ├── orders.test.ts    # order service units (TC-1, TC-4..TC-9)
-│   └── app.test.ts       # HTTP-level tests (TC-1, TC-2, TC-6, TC-9)
+│   └── orders/           # the orders domain test suite
+│       ├── menu.test.ts      # pricing units
+│       ├── orders.test.ts    # order service units (TC-1, TC-4..TC-9)
+│       └── app.test.ts       # HTTP-level tests (TC-1, TC-2, TC-6, TC-9)
 └── http/                 # live integration requests (.http + httpyac)
 ```
+
+`shared/types.ts` lives outside `src/` on purpose: it lets the spec's
+`sources` field show both a **folder** reference (`../src`) and an **individual
+file** reference (`../shared/types.ts`). The `tests` field does the same —
+a folder (`../test/orders`) plus a single file (`../http/orders.http`).
 
 ## Getting started
 
@@ -76,12 +83,13 @@ httpyac, with assertions tied to the spec's QA Test Cases. See
 
 ## How this maps to the spec
 
-The spec's metadata splits the system into two relative-path fields:
+The spec's metadata splits the system into two relative-path fields, each
+mixing a folder reference with an individual file:
 
-- `sources` → `../src/menu.ts, ../src/orders.ts, ../src/types.ts` — the
-  implementation that enforces the requirements.
-- `tests` → `../test/menu.test.ts, ../test/orders.test.ts, ../http/orders.http`
-  — the unit suites and `.http` integration requests that prove them.
+- `sources` → `../src, ../shared/types.ts` — the implementation folder plus the
+  shared types file that enforce the requirements.
+- `tests` → `../test/orders, ../http/orders.http` — the orders test suite folder
+  plus the `.http` integration requests that prove them.
 
 Both are relative to `specs/order.spec.md` and are optional, but here they keep
 the spec wired to both the code and its verification.
