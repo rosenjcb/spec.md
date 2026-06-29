@@ -1,7 +1,8 @@
 ---
 type: Spec
 title: "Spec: Pizza Orders"
-sources: ../src/menu.ts, ../src/orders.ts, ../src/types.ts, ../test/menu.test.ts, ../test/orders.test.ts, ../http/orders.http
+sources: ../src/menu.ts, ../src/orders.ts, ../src/types.ts
+tests: ../test/menu.test.ts, ../test/orders.test.ts, ../http/orders.http
 description: The specification for the Orders domain in the pizza-ts example platform
 resource: https://notion.com/read_only_publish_page_location
 tags: [pizza, orders, checkout]
@@ -79,9 +80,11 @@ cases. Here `FR-2` (pricing) owns `TC-2` through `TC-4`, and `FR-4`
 ### System Usage Notes (Agent + OKF Context)
 
 This spec is the authoritative description of the Orders domain in the
-`pizza-ts` example. The `sources` field points at `../src`, the implementation
-that enforces these requirements. The QA Test Cases map directly to the suites
-under `../test` and the requests under `../http`.
+`pizza-ts` example. The `sources` field points at the implementation under
+`../src` that enforces these requirements, and the `tests` field points at the
+verification that proves them — the unit suites under `../test` and the
+integration requests under `../http`. Both fields are relative to this spec
+file. The QA Test Cases map directly to those tagged tests.
 
 It can be used to:
 

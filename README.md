@@ -1,6 +1,6 @@
 # spec.md
 
-Version 0.1 — Draft
+Version 0.2 — Draft
 
 An agent-native specification framework for the software development lifecycle.
 
@@ -112,6 +112,7 @@ To make this concrete, we’ll break the `order.spec.md` into modular sections. 
 type: Spec
 title: Spec: Orders
 sources: ./orders
+tests: ./orders/tests
 description: The specification for the Orders domain in the Foo platform
 resource: https://notion.com/read_only_publish_page_location
 tags: [sales, orders, revenue]
@@ -123,9 +124,13 @@ timestamp: 2026-05-28T14:30:00Z
 
 This block defines the identity and external connections of the spec.
 
-The `sources` field links the spec to the parts of the system that implement, enforce, or depend on it. This can include application code, tests, schemas, documentation, or anything else that reflects or validates the behavior described here.
+The `sources` field (optional) links the spec to the parts of the system that implement, enforce, or depend on it. This can include application code, schemas, documentation, or anything else that reflects the behavior described here.
 
-In simple cases, this can point to a single folder (e.g. `./orders`). In more complex systems, it may be expanded into multiple paths such as `./api/orders`, `./web/orders`, or `./tests/orders`.
+The `tests` field (optional) links the spec to the verification that proves it — unit suites, integration requests (such as `.http` files), end-to-end suites, or any other executable checks. Keeping tests in their own field separates *what the system does* (`sources`) from *what proves it does so* (`tests`), while letting agents and humans regenerate or validate each independently.
+
+Both fields are **comma-separated lists of paths relative to the spec file itself**, so a spec stays portable regardless of where it lives in the tree. In simple cases each can point to a single folder (e.g. `sources: ./orders`, `tests: ./orders/tests`). In more complex systems they may be expanded into multiple paths such as `./api/orders, ./web/orders` for `sources` and `./tests/orders, ./e2e/orders.http` for `tests`.
+
+Both fields are optional. A spec with no implementation or tests yet can omit them and add them as the system grows.
 
 The intent is not to precisely define architecture, but to give the spec a way to stay connected to the real system as it evolves.
 

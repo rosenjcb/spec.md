@@ -76,6 +76,16 @@ httpyac, with assertions tied to the spec's QA Test Cases. See
 
 ## How this maps to the spec
 
+The spec's metadata splits the system into two relative-path fields:
+
+- `sources` → `../src/menu.ts, ../src/orders.ts, ../src/types.ts` — the
+  implementation that enforces the requirements.
+- `tests` → `../test/menu.test.ts, ../test/orders.test.ts, ../http/orders.http`
+  — the unit suites and `.http` integration requests that prove them.
+
+Both are relative to `specs/order.spec.md` and are optional, but here they keep
+the spec wired to both the code and its verification.
+
 Every requirement and test case in [`specs/order.spec.md`](specs/order.spec.md)
 has a home in the code. A requirement is higher-level than a single check, so
 one `FR` can own several `TC`s:
