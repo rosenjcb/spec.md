@@ -1,0 +1,24 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="spec.md logo">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6366F1"/>
+      <stop offset="1" stop-color="#8B5CF6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- card -->
+  <rect width="256" height="256" rx="56" fill="url(#bg)"/>
+
+  <!-- spec document -->
+  <rect x="64" y="48" width="128" height="160" rx="18" fill="#FFFFFF"/>
+
+  <!-- requirement lines -->
+  <rect x="86" y="80"  width="84" height="11" rx="5.5" fill="#C7D2FE"/>
+  <rect x="86" y="106" width="84" height="11" rx="5.5" fill="#C7D2FE"/>
+  <rect x="86" y="132" width="56" height="11" rx="5.5" fill="#C7D2FE"/>
+
+  <!-- verified badge: a spec proven by its tests -->
+  <circle cx="176" cy="176" r="38" fill="#FFFFFF"/>
+  <circle cx="176" cy="176" r="30" fill="#22C55E"/>
+  <path d="M163 176 l9 9 l18 -20" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

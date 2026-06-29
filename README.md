@@ -1,8 +1,19 @@
+<div align="center">
+
+<img src="./assets/logo.svg" alt="spec.md" width="148" height="148" />
+
 # spec.md
 
-Version 0.2 — Draft
+**An agent-native specification framework for the software development lifecycle.**
 
-An agent-native specification framework for the software development lifecycle.
+*The constraint is no longer implementation speed.*<br/>
+*The constraint is alignment.*
+
+![Version](https://img.shields.io/badge/version-0.2-6366F1)
+![Status](https://img.shields.io/badge/status-draft-8B5CF6)
+![Built on OKF](https://img.shields.io/badge/built%20on-Open%20Knowledge%20Format-22C55E)
+
+</div>
 
 ---
 
