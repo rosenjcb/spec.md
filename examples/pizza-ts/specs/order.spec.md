@@ -76,22 +76,3 @@ cases. Here `FR-2` (pricing) owns `TC-2` through `TC-4`, and `FR-4`
 | TC-7 | FR-4 | Empty items list | 400 validation error |
 | TC-8 | FR-4 | Unknown pizza or non-positive quantity | 400 validation error |
 | TC-9 | FR-5 | Fetch existing / unknown id | 200 with order / 404 not found |
-
-### System Usage Notes (Agent + OKF Context)
-
-This spec is the authoritative description of the Orders domain in the
-`pizza-ts` example. The `sources` field points at the implementation under
-`../src` that enforces these requirements, and the `tests` field points at the
-verification that proves them — the unit suites under `../test` and the
-integration requests under `../http`. Both fields are relative to this spec
-file. The QA Test Cases map directly to those tagged tests.
-
-It can be used to:
-
-- generate or regenerate the order service and HTTP routes
-- derive the request/response contracts
-- produce unit and integration test suites
-- validate implementation correctness against FR/TC mappings
-
-In an OKF-based system, this file is a node in a larger structured knowledge
-graph that evolves alongside the system.
