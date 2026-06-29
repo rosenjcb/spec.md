@@ -49,8 +49,11 @@ Derive the spec from the real system — do not invent structure.
 
 ## Step 2: Write the spec (create)
 
-Naming: `<domain>.spec.md` (e.g. `order.spec.md`). Keep every section tight —
-each sentence earns its place.
+Naming: `<domain>.spec.md` (e.g. `order.spec.md`). Place it wherever fits the
+project — next to the code it describes (`src/orders/order.spec.md`) or in a
+dedicated specs directory. Location does not matter; `sources` and `tests` are
+relative to the spec file, so set those paths to match wherever you put it.
+Keep every section tight — each sentence earns its place.
 
 ### Metadata (frontmatter)
 

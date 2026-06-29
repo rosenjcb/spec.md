@@ -157,6 +157,8 @@ Both fields are **comma-separated lists of paths relative to the spec file itsel
 
 The intent is not to precisely define architecture, but to give the spec a way to stay connected to the real system as it evolves.
 
+Because both fields are spec-relative, **where you keep the spec file is up to you**. It can live next to the code it describes (`src/orders/order.spec.md`) or in a dedicated specs directory — either is fine, and the two can coexist in the same repo. The example in this repo uses a `specs/` folder, but that is one convention, not a requirement; just set `sources` and `tests` relative to wherever the spec lives.
+
 The `resource` field defines where this spec is published or synchronized externally.
 
 ---
