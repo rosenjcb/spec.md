@@ -133,15 +133,26 @@ timestamp: 2026-05-28T14:30:00Z
 
 ---
 
-This block defines the identity and external connections of the spec.
+This block defines the identity and external connections of the spec. Only `type` and `title` are required; every other key is optional and can be added as the spec matures.
 
-The `sources` field (optional) links the spec to the parts of the system that implement, enforce, or depend on it. This can include application code, schemas, documentation, or anything else that reflects the behavior described here.
+| Key | Required | Purpose |
+|-----|----------|---------|
+| `type` | **Yes** | The OKF document type. For a spec.md file this is always `Spec`. |
+| `title` | **Yes** | Human-readable name of the spec. |
+| `sources` | No | Comma-separated, spec-relative paths to the code, schemas, or docs that implement or enforce the spec. |
+| `tests` | No | Comma-separated, spec-relative paths to the verification that proves the spec (unit suites, `.http` requests, e2e). |
+| `description` | No | One-line summary of what the spec covers. |
+| `resource` | No | External URL where the spec is published or synchronized. |
+| `tags` | No | Freeform labels for grouping and discovery. |
+| `timestamp` | No | ISO 8601 time the spec was last updated. |
 
-The `tests` field (optional) links the spec to the verification that proves it — unit suites, integration requests (such as `.http` files), end-to-end suites, or any other executable checks. Keeping tests in their own field separates *what the system does* (`sources`) from *what proves it does so* (`tests`), while letting agents and humans regenerate or validate each independently.
+A few of these warrant a closer look.
 
-Both fields are **comma-separated lists of paths relative to the spec file itself**, so a spec stays portable regardless of where it lives in the tree. In simple cases each can point to a single folder (e.g. `sources: ./src/orders`, `tests: ./test/orders`). In more complex systems they may be expanded into multiple paths such as `./src/orders, ./src/app.ts` for `sources` and `./test/orders, ./http/orders.http` for `tests`.
+The `sources` field links the spec to the parts of the system that implement, enforce, or depend on it. This can include application code, schemas, documentation, or anything else that reflects the behavior described here.
 
-Both fields are optional. A spec with no implementation or tests yet can omit them and add them as the system grows.
+The `tests` field links the spec to the verification that proves it — unit suites, integration requests (such as `.http` files), end-to-end suites, or any other executable checks. Keeping tests in their own field separates *what the system does* (`sources`) from *what proves it does so* (`tests`), while letting agents and humans regenerate or validate each independently.
+
+Both fields are **comma-separated lists of paths relative to the spec file itself**, so a spec stays portable regardless of where it lives in the tree. In simple cases each can point to a single folder (e.g. `sources: ./src/orders`, `tests: ./test/orders`). In more complex systems they may be expanded into multiple paths such as `./src/orders, ./src/app.ts` for `sources` and `./test/orders, ./http/orders.http` for `tests`. A spec with no implementation or tests yet can omit them and add them as the system grows.
 
 The intent is not to precisely define architecture, but to give the spec a way to stay connected to the real system as it evolves.
 
