@@ -1,7 +1,7 @@
 ---
 type: Spec
 title: "Spec: Pizza Orders"
-sources: ../src/menu.ts, ../src/orders.ts, ../src/types.ts, ../test/menu.test.ts, ../test/orders.test.ts, 
+sources: ../src/menu.ts, ../src/orders.ts, ../src/types.ts, ../test/menu.test.ts, ../test/orders.test.ts, ../http/orders.http
 description: The specification for the Orders domain in the pizza-ts example platform
 resource: https://notion.com/read_only_publish_page_location
 tags: [pizza, orders, checkout]
