@@ -122,8 +122,8 @@ To make this concrete, we’ll break the `order.spec.md` into modular sections. 
 ---
 type: Spec
 title: Spec: Orders
-sources: ./orders
-tests: ./orders/tests
+sources: ./src/orders
+tests: ./test/orders
 description: The specification for the Orders domain in the Foo platform
 resource: https://notion.com/read_only_publish_page_location
 tags: [sales, orders, revenue]
@@ -139,7 +139,7 @@ The `sources` field (optional) links the spec to the parts of the system that im
 
 The `tests` field (optional) links the spec to the verification that proves it — unit suites, integration requests (such as `.http` files), end-to-end suites, or any other executable checks. Keeping tests in their own field separates *what the system does* (`sources`) from *what proves it does so* (`tests`), while letting agents and humans regenerate or validate each independently.
 
-Both fields are **comma-separated lists of paths relative to the spec file itself**, so a spec stays portable regardless of where it lives in the tree. In simple cases each can point to a single folder (e.g. `sources: ./orders`, `tests: ./orders/tests`). In more complex systems they may be expanded into multiple paths such as `./api/orders, ./web/orders` for `sources` and `./tests/orders, ./e2e/orders.http` for `tests`.
+Both fields are **comma-separated lists of paths relative to the spec file itself**, so a spec stays portable regardless of where it lives in the tree. In simple cases each can point to a single folder (e.g. `sources: ./src/orders`, `tests: ./test/orders`). In more complex systems they may be expanded into multiple paths such as `./src/orders, ./src/app.ts` for `sources` and `./test/orders, ./http/orders.http` for `tests`.
 
 Both fields are optional. A spec with no implementation or tests yet can omit them and add them as the system grows.
 
