@@ -1,7 +1,8 @@
 ---
 type: Spec
 title: "Spec: Pizza Orders"
-sources: ../src/menu.ts, ../src/orders.ts, ../src/types.ts, ../test/menu.test.ts, ../test/orders.test.ts, ../http/orders.http
+sources: ../src/orders, ../src/app.ts
+tests: ../test/orders, ../http/orders.http
 description: The specification for the Orders domain in the pizza-ts example platform
 resource: https://notion.com/read_only_publish_page_location
 tags: [pizza, orders, checkout]
@@ -75,20 +76,3 @@ cases. Here `FR-2` (pricing) owns `TC-2` through `TC-4`, and `FR-4`
 | TC-7 | FR-4 | Empty items list | 400 validation error |
 | TC-8 | FR-4 | Unknown pizza or non-positive quantity | 400 validation error |
 | TC-9 | FR-5 | Fetch existing / unknown id | 200 with order / 404 not found |
-
-### System Usage Notes (Agent + OKF Context)
-
-This spec is the authoritative description of the Orders domain in the
-`pizza-ts` example. The `sources` field points at `../src`, the implementation
-that enforces these requirements. The QA Test Cases map directly to the suites
-under `../test` and the requests under `../http`.
-
-It can be used to:
-
-- generate or regenerate the order service and HTTP routes
-- derive the request/response contracts
-- produce unit and integration test suites
-- validate implementation correctness against FR/TC mappings
-
-In an OKF-based system, this file is a node in a larger structured knowledge
-graph that evolves alongside the system.

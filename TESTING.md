@@ -1,6 +1,6 @@
 # Testing in spec.md
 
-Version 0.1 — Draft
+Version 0.2 — Draft
 
 This document describes how tests relate to a `*.spec.md` file. The goal is the
 same as the spec itself: keep intent, behavior, and verification synchronized so
@@ -11,6 +11,12 @@ A `*.spec.md` defines two things that tests care about:
 - **Functional Requirements** (`FR-N`) — testable units of behavior.
 - **QA Test Cases** (`TC-N`) — executable validation conditions derived from
   those requirements.
+
+The spec's optional `tests` field points at where those tests live — a
+comma-separated list of paths (unit suites, `.http` integration requests, and
+so on) relative to the spec file itself. It is the counterpart to `sources`:
+`sources` is the implementation, `tests` is the verification. The conventions
+below describe what goes in those files so each test traces back to a `TC-N`.
 
 An `FR-N` is the higher-level intent; it is typically validated by **several**
 `TC-N`s (e.g. a pricing requirement covered by cases for size, quantity, and

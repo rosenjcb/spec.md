@@ -25,17 +25,25 @@ pizza-ts/
 ├── specs/
 │   └── order.spec.md     # the OKF spec — the source of truth
 ├── src/
-│   ├── types.ts          # domain types (mirror the Definitions)
-│   ├── menu.ts           # catalogue + size pricing (FR-2)
-│   ├── orders.ts         # validation, pricing, immutable store (FR-1,3,4)
-│   ├── app.ts            # Express routes (FR-1,2,5)
+│   ├── orders/           # the orders domain
+│   │   ├── types.ts          # domain types (mirror the Definitions)
+│   │   ├── menu.ts           # catalogue + size pricing (FR-2)
+│   │   └── orders.ts         # validation, pricing, immutable store (FR-1,3,4)
+│   ├── app.ts            # Express routes — HTTP adapter (FR-1,2,5)
 │   └── index.ts          # server entrypoint
 ├── test/
-│   ├── menu.test.ts      # pricing units
-│   ├── orders.test.ts    # order service units (TC-1, TC-4..TC-9)
-│   └── app.test.ts       # HTTP-level tests (TC-1, TC-2, TC-6, TC-9)
+│   └── orders/           # the orders domain test suite
+│       ├── menu.test.ts      # pricing units
+│       ├── orders.test.ts    # order service units (TC-1, TC-4..TC-9)
+│       └── app.test.ts       # HTTP-level tests (TC-1, TC-2, TC-6, TC-9)
 └── http/                 # live integration requests (.http + httpyac)
 ```
+
+The domain lives in its own folder, `src/orders/`, while `src/app.ts` is the
+HTTP adapter that sits outside it. That lets the spec's `sources` field show
+both a **folder** reference (`../src/orders`) and an **individual file**
+reference (`../src/app.ts`). The `tests` field does the same — a folder
+(`../test/orders`) plus a single file (`../http/orders.http`).
 
 ## Getting started
 
@@ -75,6 +83,17 @@ httpyac, with assertions tied to the spec's QA Test Cases. See
 [`http/README.md`](http/README.md).
 
 ## How this maps to the spec
+
+The spec's metadata splits the system into two relative-path fields, each
+mixing a folder reference with an individual file:
+
+- `sources` → `../src/orders, ../src/app.ts` — the orders domain folder plus the
+  HTTP adapter file that enforce the requirements.
+- `tests` → `../test/orders, ../http/orders.http` — the orders test suite folder
+  plus the `.http` integration requests that prove them.
+
+Both are relative to `specs/order.spec.md` and are optional, but here they keep
+the spec wired to both the code and its verification.
 
 Every requirement and test case in [`specs/order.spec.md`](specs/order.spec.md)
 has a home in the code. A requirement is higher-level than a single check, so

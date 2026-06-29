@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MENU, findMenuItem, unitPriceFor } from "../src/menu.js";
+import { MENU, findMenuItem, unitPriceFor } from "../../src/orders/menu.js";
 
 // Tags ([TC-N]) link each case to a QA Test Case in specs/order.spec.md.
 describe("menu", () => {
