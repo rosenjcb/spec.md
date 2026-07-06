@@ -1,6 +1,9 @@
----
-name: spec-md
-description: Author or update a *.spec.md file — an Open Knowledge Format spec that captures a system's intent, behavior, and verification so both humans and agents stay aligned. Produces OKF metadata, Intro, Definitions, Scope, Functional Requirements (FR-N), and QA Test Cases (TC-N).
+# Copilot instructions — spec.md
+
+<!-- GENERATED FROM SKILL.md — do not edit. Run: npm run sync (or node scripts/sync-adapters.mjs) -->
+
+This repository uses the [spec.md](https://github.com/rosenjcb/spec.md) format. When creating or editing `*.spec.md` files, follow these rules.
+
 ---
 
 # spec.md

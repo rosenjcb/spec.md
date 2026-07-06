@@ -1,0 +1,35 @@
+name: "spec.md check"
+description: "Lint *.spec.md files and verify that every TC-N test case has a matching [TC-N] test."
+author: "rosenjcb"
+branding:
+  icon: "check-square"
+  color: "purple"
+
+inputs:
+  path:
+    description: "Directory (or file) to search for *.spec.md files."
+    required: false
+    default: "."
+  strict:
+    description: "Fail the build on warnings and coverage gaps."
+    required: false
+    default: "true"
+  mode:
+    description: "Which check to run: check (lint + coverage), lint, or coverage."
+    required: false
+    default: "check"
+  version:
+    description: "Version of the spec-md CLI to run (npm dist-tag or version)."
+    required: false
+    default: "latest"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run spec-md
+      shell: bash
+      run: |
+        strict_flag=""
+        if [ "${{ inputs.strict }}" = "true" ]; then strict_flag="--strict"; fi
+        echo "spec-md ${{ inputs.mode }} ${{ inputs.path }} $strict_flag"
+        npx --yes @rosenjcb/spec-md@${{ inputs.version }} ${{ inputs.mode }} "${{ inputs.path }}" $strict_flag

@@ -1,0 +1,21 @@
+{
+  "name": "spec.md",
+  "version": "0.2.0",
+  "private": true,
+  "description": "spec.md — an agent-native specification framework. This root package wires up the packaging tooling; the publishable CLI lives in ./cli.",
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync-adapters.mjs",
+    "sync:check": "node scripts/sync-adapters.mjs --check",
+    "spec-md": "node cli/bin/spec-md.js",
+    "lint:specs": "node cli/bin/spec-md.js lint .",
+    "check:specs": "node cli/bin/spec-md.js check .",
+    "test": "node cli/test/run.js"
+  },
+  "homepage": "https://github.com/rosenjcb/spec.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rosenjcb/spec.md.git"
+  },
+  "license": "MIT"
+}

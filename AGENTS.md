@@ -1,6 +1,9 @@
----
-name: spec-md
-description: Author or update a *.spec.md file — an Open Knowledge Format spec that captures a system's intent, behavior, and verification so both humans and agents stay aligned. Produces OKF metadata, Intro, Definitions, Scope, Functional Requirements (FR-N), and QA Test Cases (TC-N).
+# AGENTS.md — spec.md
+
+<!-- GENERATED FROM SKILL.md — do not edit. Run: npm run sync (or node scripts/sync-adapters.mjs) -->
+
+When working with `*.spec.md` files in this repository, follow the rules below.
+
 ---
 
 # spec.md
