@@ -21,11 +21,6 @@ const GH_BLOB = "https://github.com/rosenjcb/spec.md/blob/main";
 const BANNER = (source) =>
   `<!-- GENERATED FROM ${source} — do not edit. Run: npm run sync (or node scripts/sync-adapters.mjs) -->`;
 
-// Rewrite repo-relative markdown links (./TESTING.md, ./examples/…) into
-// absolute GitHub URLs so a distributed copy resolves them from anywhere.
-// The root SKILL.md keeps its relative links and is never modified.
-const linkify = (text) => text.replace(/\]\(\.\/([^)]+)\)/g, `](${GH_BLOB}/$1)`);
-
 /** Split leading `--- ... ---` frontmatter from a markdown file. */
 function split(text) {
   const m = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
@@ -49,17 +44,12 @@ const intro = (agent) =>
   `the [spec.md](https://github.com/rosenjcb/spec.md) format. It is generated from the canonical ` +
   `[SKILL.md](${GH_BLOB}/SKILL.md); see it and [TESTING.md](${GH_BLOB}/TESTING.md) for the source of truth.\n`;
 
-// SKILL.md body with repo-relative links made absolute, for embedding elsewhere.
-const linkedBody = linkify(body);
-
 // Each target: { path, render(body) -> string }
 const targets = [
   // Plugin skill copy (Claude Code plugin auto-discovers skills/<name>/SKILL.md).
-  // The distributed skill has absolute links so its `./TESTING.md` reference
-  // resolves without shipping a second copy of TESTING.md.
   {
     path: "skills/spec-md/SKILL.md",
-    render: () => linkify(skillRaw).trimEnd() + "\n",
+    render: () => skillRaw.trimEnd() + "\n",
   },
   // Portable format read by many text-parsing agents (Codex, Jules, etc.).
   {
@@ -67,26 +57,26 @@ const targets = [
     render: () =>
       `# AGENTS.md — spec.md\n\n${BANNER("SKILL.md")}\n\n` +
       `When working with \`*.spec.md\` files in this repository, follow the rules below.\n\n` +
-      `---\n\n${linkedBody}\n`,
+      `---\n\n${body}\n`,
   },
   // Cursor rules (activate on spec files).
   {
     path: ".cursor/rules/spec-md.mdc",
     render: () =>
       `---\ndescription: ${description}\nglobs: **/*.spec.md\nalwaysApply: false\n---\n\n` +
-      `${intro("Cursor")}\n---\n\n${linkedBody}\n`,
+      `${intro("Cursor")}\n---\n\n${body}\n`,
   },
   // Windsurf rules.
   {
     path: ".windsurf/rules/spec-md.md",
     render: () =>
       `---\ntrigger: glob\nglobs: **/*.spec.md\ndescription: ${description}\n---\n\n` +
-      `${intro("Windsurf")}\n---\n\n${linkedBody}\n`,
+      `${intro("Windsurf")}\n---\n\n${body}\n`,
   },
   // Cline rules.
   {
     path: ".clinerules/spec-md.md",
-    render: () => `# spec.md rules\n\n${intro("Cline")}\n---\n\n${linkedBody}\n`,
+    render: () => `# spec.md rules\n\n${intro("Cline")}\n---\n\n${body}\n`,
   },
   // GitHub Copilot repository instructions.
   {
@@ -94,7 +84,7 @@ const targets = [
     render: () =>
       `# Copilot instructions — spec.md\n\n${BANNER("SKILL.md")}\n\n` +
       `This repository uses the [spec.md](https://github.com/rosenjcb/spec.md) format. ` +
-      `When creating or editing \`*.spec.md\` files, follow these rules.\n\n---\n\n${linkedBody}\n`,
+      `When creating or editing \`*.spec.md\` files, follow these rules.\n\n---\n\n${body}\n`,
   },
 ];
 
