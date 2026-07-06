@@ -132,8 +132,10 @@ Or skip the action and run the CLI directly: `npx @rosenjcb/spec-md check --stri
 skill copy are generated:
 
 ```bash
-npm run sync         # regenerate every adapter from SKILL.md
-npm run sync:check   # verify they are up to date (runs in CI)
+pnpm run sync         # regenerate every adapter from SKILL.md
+pnpm run sync:check   # verify they are up to date (runs in CI)
 ```
 
-Never edit a generated file by hand — change `SKILL.md` and re-run `npm run sync`.
+Never edit a generated file by hand — change `SKILL.md` and re-run `pnpm run sync`.
+
+Releases (npm, tags, GitHub Action): see **[RELEASING.md](./RELEASING.md)**.

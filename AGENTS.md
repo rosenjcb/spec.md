@@ -1,6 +1,6 @@
 # AGENTS.md — spec.md
 
-<!-- GENERATED FROM SKILL.md — do not edit. Run: npm run sync (or node scripts/sync-adapters.mjs) -->
+<!-- GENERATED FROM SKILL.md — do not edit. Run: pnpm run sync (or node scripts/sync-adapters.mjs) -->
 
 When working with `*.spec.md` files in this repository, follow the rules below.
 

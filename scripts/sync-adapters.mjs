@@ -13,16 +13,13 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const CHECK = process.argv.includes("--check");
-
 const GH_BLOB = "https://github.com/rosenjcb/spec.md/blob/main";
 
-const BANNER = (source) =>
-  `<!-- GENERATED FROM ${source} — do not edit. Run: npm run sync (or node scripts/sync-adapters.mjs) -->`;
+export const adapterBanner = (source) =>
+  `<!-- GENERATED FROM ${source} — do not edit. Run: pnpm run sync (or node scripts/sync-adapters.mjs) -->`;
 
 /** Split leading `--- ... ---` frontmatter from a markdown file. */
-function split(text) {
+export function splitSkillMarkdown(text) {
   const m = text.match(/^---\s*\n([\s\S]*?)\n---\s*\n?/);
   if (!m) return { fm: {}, body: text.trim() };
   const fm = {};
@@ -33,85 +30,110 @@ function split(text) {
   return { fm, body: text.slice(m[0].length).trim() };
 }
 
-const skillRaw = readFileSync(join(root, "SKILL.md"), "utf8");
-const { fm, body } = split(skillRaw);
-const description =
-  fm.description ||
-  "Author or update *.spec.md files — Open Knowledge Format specs that keep intent, behavior, and verification aligned.";
+function intro(agent) {
+  return (
+    `${adapterBanner("SKILL.md")}\n\n> This guide teaches ${agent} to author and maintain \`*.spec.md\` files — ` +
+    `the [spec.md](https://github.com/rosenjcb/spec.md) format. It is generated from the canonical ` +
+    `[SKILL.md](${GH_BLOB}/SKILL.md); see it and [TESTING.md](${GH_BLOB}/TESTING.md) for the source of truth.\n`
+  );
+}
 
-const intro = (agent) =>
-  `${BANNER("SKILL.md")}\n\n> This guide teaches ${agent} to author and maintain \`*.spec.md\` files — ` +
-  `the [spec.md](https://github.com/rosenjcb/spec.md) format. It is generated from the canonical ` +
-  `[SKILL.md](${GH_BLOB}/SKILL.md); see it and [TESTING.md](${GH_BLOB}/TESTING.md) for the source of truth.\n`;
+/** @param {string} skillRaw */
+export function buildAdapterOutputs(skillRaw) {
+  const { fm, body } = splitSkillMarkdown(skillRaw);
+  const description =
+    fm.description ||
+    "Author or update *.spec.md files — Open Knowledge Format specs that keep intent, behavior, and verification aligned.";
 
-// Each target: { path, render(body) -> string }
-const targets = [
-  // Plugin skill copy (Claude Code plugin auto-discovers skills/<name>/SKILL.md).
-  {
-    path: "skills/spec-md/SKILL.md",
-    render: () => skillRaw.trimEnd() + "\n",
-  },
-  // Portable format read by many text-parsing agents (Codex, Jules, etc.).
-  {
-    path: "AGENTS.md",
-    render: () =>
-      `# AGENTS.md — spec.md\n\n${BANNER("SKILL.md")}\n\n` +
-      `When working with \`*.spec.md\` files in this repository, follow the rules below.\n\n` +
-      `---\n\n${body}\n`,
-  },
-  // Cursor rules (activate on spec files).
-  {
-    path: ".cursor/rules/spec-md.mdc",
-    render: () =>
-      `---\ndescription: ${description}\nglobs: **/*.spec.md\nalwaysApply: false\n---\n\n` +
-      `${intro("Cursor")}\n---\n\n${body}\n`,
-  },
-  // Windsurf rules.
-  {
-    path: ".windsurf/rules/spec-md.md",
-    render: () =>
-      `---\ntrigger: glob\nglobs: **/*.spec.md\ndescription: ${description}\n---\n\n` +
-      `${intro("Windsurf")}\n---\n\n${body}\n`,
-  },
-  // Cline rules.
-  {
-    path: ".clinerules/spec-md.md",
-    render: () => `# spec.md rules\n\n${intro("Cline")}\n---\n\n${body}\n`,
-  },
-  // GitHub Copilot repository instructions.
-  {
-    path: ".github/copilot-instructions.md",
-    render: () =>
-      `# Copilot instructions — spec.md\n\n${BANNER("SKILL.md")}\n\n` +
-      `This repository uses the [spec.md](https://github.com/rosenjcb/spec.md) format. ` +
-      `When creating or editing \`*.spec.md\` files, follow these rules.\n\n---\n\n${body}\n`,
-  },
-];
+  return [
+    {
+      path: "skills/spec-md/SKILL.md",
+      content: skillRaw.trimEnd() + "\n",
+    },
+    {
+      path: "AGENTS.md",
+      content:
+        `# AGENTS.md — spec.md\n\n${adapterBanner("SKILL.md")}\n\n` +
+        `When working with \`*.spec.md\` files in this repository, follow the rules below.\n\n` +
+        `---\n\n${body}\n`,
+    },
+    {
+      path: ".cursor/rules/spec-md.mdc",
+      content:
+        `---\ndescription: ${description}\nglobs: **/*.spec.md\nalwaysApply: false\n---\n\n` +
+        `${intro("Cursor")}\n---\n\n${body}\n`,
+    },
+    {
+      path: ".windsurf/rules/spec-md.md",
+      content:
+        `---\ntrigger: glob\nglobs: **/*.spec.md\ndescription: ${description}\n---\n\n` +
+        `${intro("Windsurf")}\n---\n\n${body}\n`,
+    },
+    {
+      path: ".clinerules/spec-md.md",
+      content: `# spec.md rules\n\n${intro("Cline")}\n---\n\n${body}\n`,
+    },
+    {
+      path: ".github/copilot-instructions.md",
+      content:
+        `# Copilot instructions — spec.md\n\n${adapterBanner("SKILL.md")}\n\n` +
+        `This repository uses the [spec.md](https://github.com/rosenjcb/spec.md) format. ` +
+        `When creating or editing \`*.spec.md\` files, follow these rules.\n\n---\n\n${body}\n`,
+    },
+  ];
+}
 
-let drift = 0;
-let wrote = 0;
-for (const t of targets) {
-  const abs = join(root, t.path);
-  const next = t.render();
-  const current = existsSync(abs) ? readFileSync(abs, "utf8") : null;
-  if (current === next) continue;
-  if (CHECK) {
-    console.error(`✗ out of date: ${t.path}`);
-    drift++;
+/**
+ * @param {string} root
+ * @param {{ check?: boolean }} [options]
+ * @returns {{ wrote: number, drift: string[] }}
+ */
+export function syncAdapters(root, { check = false } = {}) {
+  const skillRaw = readFileSync(join(root, "SKILL.md"), "utf8");
+  const outputs = buildAdapterOutputs(skillRaw);
+  const drift = [];
+  let wrote = 0;
+
+  for (const { path: relPath, content } of outputs) {
+    const abs = join(root, relPath);
+    const current = existsSync(abs) ? readFileSync(abs, "utf8") : null;
+    if (current === content) continue;
+    if (check) {
+      drift.push(relPath);
+    } else {
+      mkdirSync(dirname(abs), { recursive: true });
+      writeFileSync(abs, content);
+      wrote++;
+    }
+  }
+
+  return { wrote, drift };
+}
+
+function main() {
+  const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+  const check = process.argv.includes("--check");
+  const { wrote, drift } = syncAdapters(root, { check });
+
+  if (check) {
+    if (drift.length) {
+      for (const relPath of drift) {
+        console.error(`✗ out of date: ${relPath}`);
+      }
+      console.error(`\n${drift.length} adapter(s) out of date. Run: pnpm run sync`);
+      process.exit(1);
+    }
+    console.log("✓ all adapters are in sync with SKILL.md");
+    return;
+  }
+
+  if (wrote) {
+    console.log(`\n${wrote} file(s) updated.`);
   } else {
-    mkdirSync(dirname(abs), { recursive: true });
-    writeFileSync(abs, next);
-    console.log(`✓ wrote ${t.path}`);
-    wrote++;
+    console.log("\nAlready up to date.");
   }
 }
 
-if (CHECK) {
-  if (drift) {
-    console.error(`\n${drift} adapter(s) out of date. Run: npm run sync`);
-    process.exit(1);
-  }
-  console.log("✓ all adapters are in sync with SKILL.md");
-} else {
-  console.log(wrote ? `\n${wrote} file(s) updated.` : "\nAlready up to date.");
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  main();
 }

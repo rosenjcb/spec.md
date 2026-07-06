@@ -1,6 +1,6 @@
 # spec.md rules
 
-<!-- GENERATED FROM SKILL.md — do not edit. Run: npm run sync (or node scripts/sync-adapters.mjs) -->
+<!-- GENERATED FROM SKILL.md — do not edit. Run: pnpm run sync (or node scripts/sync-adapters.mjs) -->
 
 > This guide teaches Cline to author and maintain `*.spec.md` files — the [spec.md](https://github.com/rosenjcb/spec.md) format. It is generated from the canonical [SKILL.md](https://github.com/rosenjcb/spec.md/blob/main/SKILL.md); see it and [TESTING.md](https://github.com/rosenjcb/spec.md/blob/main/TESTING.md) for the source of truth.
 

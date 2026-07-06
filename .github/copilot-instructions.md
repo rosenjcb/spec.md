@@ -1,6 +1,6 @@
 # Copilot instructions — spec.md
 
-<!-- GENERATED FROM SKILL.md — do not edit. Run: npm run sync (or node scripts/sync-adapters.mjs) -->
+<!-- GENERATED FROM SKILL.md — do not edit. Run: pnpm run sync (or node scripts/sync-adapters.mjs) -->
 
 This repository uses the [spec.md](https://github.com/rosenjcb/spec.md) format. When creating or editing `*.spec.md` files, follow these rules.
 
