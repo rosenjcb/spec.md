@@ -31,8 +31,8 @@ jobs:
         run: pnpm run publish:check
 
       # The zero-dependency CLI test suite.
-      - name: CLI tests
-        run: node cli/test/run.js
+      - name: Tests
+        run: pnpm test
 
       # Dogfood: validate this repo's own specs and their [TC-N] coverage.
       - name: Validate specs

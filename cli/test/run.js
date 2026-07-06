@@ -1,11 +1,21 @@
 #!/usr/bin/env node
-// Zero-dependency test runner for the spec-md CLI.
+// Zero-dependency test runner for the spec-md CLI and libraries.
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, writeFileSync, rmSync, existsSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
+
+import {
+  parseFrontmatter,
+  pathList,
+  parseTables,
+  extractTcTags,
+} from "../lib/parse.js";
+import { bar, relative } from "../lib/report.js";
+import { findSpecs, walkFiles } from "../lib/walk.js";
+import { specTemplate } from "../lib/template.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const bin = resolve(here, "../bin/spec-md.js");
@@ -115,6 +125,92 @@ test("new scaffolds a spec that lints clean of errors", () => {
 test("help and version work", () => {
   assert.equal(run(["--version"]).code, 0);
   assert.match(run(["--help"]).out, /Usage/);
+});
+
+console.log("\nparse");
+test("parseFrontmatter reads scalars and inline arrays", () => {
+  const { data, hasFrontmatter } = parseFrontmatter(
+    "---\ntype: Spec\ntags: [a, b]\ntitle: Demo\n---\n\nBody\n",
+  );
+  assert.equal(hasFrontmatter, true);
+  assert.equal(data.type, "Spec");
+  assert.deepEqual(data.tags, ["a", "b"]);
+  assert.equal(data.title, "Demo");
+});
+
+test("pathList normalizes comma strings and arrays", () => {
+  assert.deepEqual(pathList("a, b ,c"), ["a", "b", "c"]);
+  assert.deepEqual(pathList(["x", "y"]), ["x", "y"]);
+  assert.deepEqual(pathList(""), []);
+});
+
+test("parseTables extracts FR and TC rows", () => {
+  const text = `### Functional Requirements
+| ID | Requirement |
+|----|-------------|
+| FR-1 | create |
+
+### QA Test Cases
+| Test ID | Requirement | Scenario | Expected Outcome |
+|---------|-------------|----------|------------------|
+| TC-1 | FR-1 | input | output |
+`;
+  const { frs, tcs, sawFrTable, sawTcTable } = parseTables(text);
+  assert.equal(sawFrTable, true);
+  assert.equal(sawTcTable, true);
+  assert.equal(frs[0].id, "FR-1");
+  assert.equal(tcs[0].id, "TC-1");
+  assert.deepEqual(tcs[0].requirements, ["FR-1"]);
+});
+
+test("extractTcTags collects unique TC references", () => {
+  const tags = extractTcTags('it("[TC-1] one", () => {}); it("[TC-1] dup", () => {}); [TC-2]');
+  assert.deepEqual([...tags].sort(), ["TC-1", "TC-2"]);
+});
+
+console.log("\nreport");
+test("bar renders filled blocks without color when NO_COLOR is set", () => {
+  const old = process.env.NO_COLOR;
+  process.env.NO_COLOR = "1";
+  try {
+    assert.match(bar(50, 4), /██/);
+    assert.match(bar(50, 4), /░░/);
+  } finally {
+    if (old === undefined) delete process.env.NO_COLOR;
+    else process.env.NO_COLOR = old;
+  }
+});
+
+test("relative shortens paths under cwd", () => {
+  const cwd = resolve("/tmp/project");
+  assert.equal(relative(join(cwd, "specs/a.spec.md"), cwd), "specs/a.spec.md");
+});
+
+console.log("\nwalk");
+test("findSpecs discovers nested spec files and ignores node_modules", () => {
+  const dir = mkdtempSync(join(tmpdir(), "spec-md-walk-"));
+  try {
+    mkdirSync(join(dir, "node_modules"), { recursive: true });
+    mkdirSync(join(dir, "src"), { recursive: true });
+    writeFileSync(join(dir, "src/nested.spec.md"), "---\ntype: Spec\ntitle: x\n---\n");
+    writeFileSync(join(dir, "node_modules/hidden.spec.md"), "---\ntype: Spec\ntitle: y\n---\n");
+    const found = findSpecs([dir]);
+    assert.equal(found.length, 1);
+    assert.ok(found[0].endsWith("nested.spec.md"));
+    const walked = [...walkFiles(join(dir, "src"))];
+    assert.equal(walked.length, 1);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+console.log("\ntemplate");
+test("specTemplate scaffolds domain paths and FR/TC tables", () => {
+  const body = specTemplate({ domain: "billing" });
+  assert.match(body, /title: "Spec: Billing"/);
+  assert.match(body, /sources: \.\/src\/billing/);
+  assert.match(body, /FR-1/);
+  assert.match(body, /TC-1/);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

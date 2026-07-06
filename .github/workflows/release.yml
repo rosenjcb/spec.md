@@ -30,8 +30,8 @@ jobs:
       - name: Verify publish targets
         run: pnpm run publish:check
 
-      - name: CLI tests
-        run: node cli/test/run.js
+      - name: Tests
+        run: pnpm test
 
       - name: Read version
         id: meta
