@@ -18,6 +18,33 @@
 
 ---
 
+## Install
+
+Get spec.md into your project in one line. Full guide: **[INSTALL.md](./INSTALL.md)**.
+
+```bash
+# Claude Code — plugin (skill + /spec, /spec-check, /spec-coverage commands)
+/plugin marketplace add rosenjcb/spec.md
+/plugin install spec-md@spec-md
+
+# Any agent — install the skill + rule files (Cursor, Windsurf, Cline, Copilot, AGENTS.md)
+curl -fsSL https://raw.githubusercontent.com/rosenjcb/spec.md/main/install.sh | bash
+
+# CLI — lint specs and check TC-N test coverage (great in CI)
+npx spec-md check
+```
+
+| Surface | What you get |
+|---------|--------------|
+| **Claude Code plugin** | The skill plus `/spec`, `/spec-update`, `/spec-check`, `/spec-coverage`. |
+| **`install.sh` / `install.ps1`** | The skill for Claude Code and rule files for Cursor, Windsurf, Cline, Copilot, and a portable `AGENTS.md`. |
+| **[`spec-md` CLI](./cli)** | `lint`, `coverage`, `check`, `list`, `new` — validate specs and enforce `[TC-N]` coverage. |
+| **[GitHub Action](./action.yml)** | `uses: rosenjcb/spec.md@main` — fail CI when a spec drifts or a test case loses its test. |
+
+Every agent rule file is generated from [`SKILL.md`](./SKILL.md) so nothing drifts.
+
+---
+
 ## Motivation
 
 In 2026, most software is no longer written line-by-line by humans. Frontend applications, backend services, infrastructure, migrations, tests, and documentation are routinely generated or assisted by AI systems.

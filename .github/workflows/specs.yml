@@ -1,0 +1,30 @@
+name: specs
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  spec-md:
+    name: lint, test, and coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # The adapter files (Cursor/Windsurf/Cline/Copilot/AGENTS.md and the
+      # plugin skill copy) are generated from SKILL.md. Fail if they drifted.
+      - name: Adapters in sync with SKILL.md
+        run: node scripts/sync-adapters.mjs --check
+
+      # The zero-dependency CLI test suite.
+      - name: CLI tests
+        run: node cli/test/run.js
+
+      # Dogfood: validate this repo's own specs and their [TC-N] coverage.
+      - name: Validate specs
+        run: node cli/bin/spec-md.js check . --strict

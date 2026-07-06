@@ -1,0 +1,44 @@
+{
+  "name": "spec-md",
+  "version": "0.2.0",
+  "description": "Lint, coverage, and scaffolding tooling for *.spec.md documents — the agent-native specification format.",
+  "type": "module",
+  "bin": {
+    "spec-md": "bin/spec-md.js"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node test/run.js",
+    "spec-md": "node bin/spec-md.js"
+  },
+  "keywords": [
+    "spec",
+    "spec.md",
+    "specification",
+    "okf",
+    "open-knowledge-format",
+    "requirements",
+    "qa",
+    "test-coverage",
+    "agent",
+    "ai",
+    "linter"
+  ],
+  "homepage": "https://github.com/rosenjcb/spec.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rosenjcb/spec.md.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/rosenjcb/spec.md/issues"
+  },
+  "license": "MIT"
+}
