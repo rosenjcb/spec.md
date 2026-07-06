@@ -11,13 +11,13 @@ and `FR-N` / `TC-N` structure, and cross-references every `TC-N` against the
 
 ```bash
 # one-off, no install
-npx spec-md lint
+npx @rosenjcb/spec-md lint
 
 # project dev dependency
-npm install --save-dev spec-md
+npm install --save-dev @rosenjcb/spec-md
 
 # global
-npm install --global spec-md
+npm install --global @rosenjcb/spec-md
 ```
 
 ## Commands
@@ -68,7 +68,7 @@ $ spec-md coverage examples/pizza-ts
 ## In CI
 
 ```yaml
-- run: npx spec-md check --strict
+- run: npx @rosenjcb/spec-md check --strict
 ```
 
 See the repository root for a reusable GitHub Action (`rosenjcb/spec.md`) that

@@ -1,7 +1,7 @@
 ---
 description: Report which TC-N test cases have a matching [TC-N] test, and surface coverage gaps.
 argument-hint: "[path] (defaults to the whole repo)"
-allowed-tools: Bash(npx spec-md:*), Bash(node:*), Read, Grep, Glob
+allowed-tools: Bash(npx @rosenjcb/spec-md:*), Bash(node:*), Read, Grep, Glob
 ---
 
 Check spec test-case coverage for: **${ARGUMENTS:-the whole repository}**
@@ -9,7 +9,7 @@ Check spec test-case coverage for: **${ARGUMENTS:-the whole repository}**
 Run:
 
 ```
-npx spec-md coverage ${ARGUMENTS:-.}
+npx @rosenjcb/spec-md coverage ${ARGUMENTS:-.}
 ```
 
 This cross-references each `TC-N` row against the `[TC-N]` tags in the spec's

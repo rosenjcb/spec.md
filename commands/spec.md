@@ -19,5 +19,5 @@ Use the **spec-md** skill. Follow its "create" path:
 
 If `$ARGUMENTS` is empty, ask which feature or domain to spec, then proceed.
 
-When the draft is ready, run `npx spec-md lint <file>` (if available) and fix any
+When the draft is ready, run `npx @rosenjcb/spec-md lint <file>` (if available) and fix any
 errors before finishing.

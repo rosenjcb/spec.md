@@ -19,7 +19,7 @@ spec.md ships in two layers you can mix and match:
 | **Claude Code** (skill only) | `curl -fsSL https://raw.githubusercontent.com/rosenjcb/spec.md/main/install.sh \| bash` |
 | **Cursor / Windsurf / Cline / Copilot** | `install.sh --cursor --windsurf --cline --copilot` (see below) |
 | **Any agent** (portable) | drop [`AGENTS.md`](./AGENTS.md) at your repo root |
-| **CI / command line** | `npm i -D spec-md` · `npx spec-md check` |
+| **CI / command line** | `npm i -D @rosenjcb/spec-md` · `npx @rosenjcb/spec-md check` |
 
 ---
 
@@ -85,17 +85,17 @@ one you need. All of them are generated from `SKILL.md`, so they never drift.
 ## 4. The CLI
 
 ```bash
-npx spec-md lint            # validate frontmatter + FR/TC structure
-npx spec-md coverage        # TC-N ↔ [TC-N] test coverage
-npx spec-md check --strict  # both, as a CI gate
-npx spec-md new billing     # scaffold billing.spec.md
-npx spec-md list            # every spec, with counts + coverage
+npx @rosenjcb/spec-md lint            # validate frontmatter + FR/TC structure
+npx @rosenjcb/spec-md coverage        # TC-N ↔ [TC-N] test coverage
+npx @rosenjcb/spec-md check --strict  # both, as a CI gate
+npx @rosenjcb/spec-md new billing     # scaffold billing.spec.md
+npx @rosenjcb/spec-md list            # every spec, with counts + coverage
 ```
 
 Install it as a dev dependency to pin the version:
 
 ```bash
-npm install --save-dev spec-md
+npm install --save-dev @rosenjcb/spec-md
 ```
 
 Full command reference: [`cli/README.md`](./cli/README.md).
@@ -122,7 +122,7 @@ jobs:
           strict: "true"
 ```
 
-Or skip the action and run the CLI directly: `npx spec-md check --strict`.
+Or skip the action and run the CLI directly: `npx @rosenjcb/spec-md check --strict`.
 
 ---
 

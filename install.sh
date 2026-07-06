@@ -106,4 +106,4 @@ if [ "$DO_AGENTS" -eq 1 ]; then
 fi
 
 printf "\n${C_GREEN}${C_BOLD}Done.${C_RESET}\n"
-printf "${C_BLUE}›${C_RESET} Next: install the CLI with ${C_BOLD}npm i -D spec-md${C_RESET} then ${C_BOLD}npx spec-md check${C_RESET}\n"
+printf "${C_BLUE}›${C_RESET} Next: install the CLI with ${C_BOLD}npm i -D @rosenjcb/spec-md${C_RESET} then ${C_BOLD}npx @rosenjcb/spec-md check${C_RESET}\n"

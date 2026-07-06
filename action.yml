@@ -32,4 +32,4 @@ runs:
         strict_flag=""
         if [ "${{ inputs.strict }}" = "true" ]; then strict_flag="--strict"; fi
         echo "spec-md ${{ inputs.mode }} ${{ inputs.path }} $strict_flag"
-        npx --yes spec-md@${{ inputs.version }} ${{ inputs.mode }} "${{ inputs.path }}" $strict_flag
+        npx --yes @rosenjcb/spec-md@${{ inputs.version }} ${{ inputs.mode }} "${{ inputs.path }}" $strict_flag

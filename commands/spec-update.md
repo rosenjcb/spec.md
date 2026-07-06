@@ -16,8 +16,8 @@ Use the **spec-md** skill. Follow its "update" path (Step 2u):
 3. Mark new/changed rows with `[NEW]` / `[UPDATED]` while in review.
 4. Reconcile `sources`/`tests` if paths moved, and bump `timestamp`.
 
-If `$ARGUMENTS` doesn't point at a file, run `npx spec-md list` (or search for
+If `$ARGUMENTS` doesn't point at a file, run `npx @rosenjcb/spec-md list` (or search for
 `*.spec.md`) to find the right spec, then confirm before editing.
 
-Finish by running `npx spec-md check <file>` and resolving any errors or new
+Finish by running `npx @rosenjcb/spec-md check <file>` and resolving any errors or new
 coverage gaps.

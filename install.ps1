@@ -67,4 +67,4 @@ if ($Copilot)  { Fetch ".github/copilot-instructions.md"  (Join-Path $Dir ".gith
 if ($Agents)   { Fetch "AGENTS.md"                        (Join-Path $Dir "AGENTS.md");                        Ok "AGENTS.md installed" }
 
 Write-Host "`nDone." -ForegroundColor Green
-Say "Next: npm i -D spec-md   then   npx spec-md check"
+Say "Next: npm i -D @rosenjcb/spec-md   then   npx @rosenjcb/spec-md check"

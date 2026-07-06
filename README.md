@@ -31,7 +31,7 @@ Get spec.md into your project in one line. Full guide: **[INSTALL.md](./INSTALL.
 curl -fsSL https://raw.githubusercontent.com/rosenjcb/spec.md/main/install.sh | bash
 
 # CLI — lint specs and check TC-N test coverage (great in CI)
-npx spec-md check
+npx @rosenjcb/spec-md check
 ```
 
 | Surface | What you get |

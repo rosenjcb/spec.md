@@ -1,10 +1,13 @@
 {
-  "name": "spec-md",
+  "name": "@rosenjcb/spec-md",
   "version": "0.2.0",
   "description": "Lint, coverage, and scaffolding tooling for *.spec.md documents — the agent-native specification format.",
   "type": "module",
   "bin": {
     "spec-md": "bin/spec-md.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "bin",
