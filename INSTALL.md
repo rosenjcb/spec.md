@@ -137,3 +137,5 @@ npm run sync:check   # verify they are up to date (runs in CI)
 ```
 
 Never edit a generated file by hand — change `SKILL.md` and re-run `npm run sync`.
+
+Releases (npm, tags, GitHub Action): see **[RELEASING.md](./RELEASING.md)**.

@@ -1,0 +1,41 @@
+# Tag on merge to main. Versioning happens on the PR branch (`npm run changeset:version`),
+# enforced by the merge gate in specs.yml. This workflow only fails if unconsumed
+# changesets slipped onto main, then tags @rosenjcb/spec-md's version.
+name: Changesets
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    name: Tag release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Require consumed changesets
+        run: node scripts/check-changeset-consistency.mjs --assert-no-pending
+
+      - name: Verify publish target consistency
+        run: npm run publish:check
+
+      - name: Tag release
+        run: npm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
