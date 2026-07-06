@@ -44,8 +44,9 @@ Then in any session:
 
 ## 2. Claude Code skill only
 
-If you just want the authoring guidance (no commands), the installer copies
-`SKILL.md` + `TESTING.md` into `~/.claude/skills/spec-md/`:
+If you just want the authoring guidance (no commands), the installer copies the
+skill into `~/.claude/skills/spec-md/` (it links to the companion
+[`TESTING.md`](./TESTING.md) rather than bundling a copy of it):
 
 ```bash
 # global (default)

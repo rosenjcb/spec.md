@@ -2,7 +2,7 @@
 
 <!-- GENERATED FROM SKILL.md — do not edit. Run: npm run sync (or node scripts/sync-adapters.mjs) -->
 
-> This guide teaches Cline to author and maintain `*.spec.md` files — the [spec.md](https://github.com/rosenjcb/spec.md) format. It is generated from the canonical [`SKILL.md`](../SKILL.md); see there and [`TESTING.md`](../TESTING.md) for the source of truth.
+> This guide teaches Cline to author and maintain `*.spec.md` files — the [spec.md](https://github.com/rosenjcb/spec.md) format. It is generated from the canonical [SKILL.md](https://github.com/rosenjcb/spec.md/blob/main/SKILL.md); see it and [TESTING.md](https://github.com/rosenjcb/spec.md/blob/main/TESTING.md) for the source of truth.
 
 ---
 
@@ -171,7 +171,7 @@ only what drifted. Apply the same section rules as Step 2, plus:
 ## Step 3: Link the tests
 
 Tests trace back to the spec via a bracketed `[TC-N]` prefix on the test name —
-the join key between spec and suite. See [TESTING.md](./TESTING.md) for the full
+the join key between spec and suite. See [TESTING.md](https://github.com/rosenjcb/spec.md/blob/main/TESTING.md) for the full
 convention.
 
 ```ts

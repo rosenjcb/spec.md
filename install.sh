@@ -79,8 +79,8 @@ if [ "$DO_CLAUDE" -eq 1 ]; then
   else
     SKILL_DIR="$PROJECT_DIR/.claude/skills/spec-md"
   fi
-  fetch "SKILL.md" "$SKILL_DIR/SKILL.md"
-  fetch "TESTING.md" "$SKILL_DIR/TESTING.md"
+  # Distributed skill copy links to TESTING.md by URL, so no second file needed.
+  fetch "skills/spec-md/SKILL.md" "$SKILL_DIR/SKILL.md"
   ok "Claude Code skill → $SKILL_DIR"
 fi
 

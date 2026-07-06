@@ -171,7 +171,7 @@ only what drifted. Apply the same section rules as Step 2, plus:
 ## Step 3: Link the tests
 
 Tests trace back to the spec via a bracketed `[TC-N]` prefix on the test name —
-the join key between spec and suite. See [TESTING.md](./TESTING.md) for the full
+the join key between spec and suite. See [TESTING.md](https://github.com/rosenjcb/spec.md/blob/main/TESTING.md) for the full
 convention.
 
 ```ts

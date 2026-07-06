@@ -56,8 +56,8 @@ if ($SrcDir) { Say "using local checkout" } else { Say "downloading from GitHub"
 
 if ($Claude) {
   $skillDir = if ($Local) { Join-Path $Dir ".claude/skills/spec-md" } else { Join-Path $HOME ".claude/skills/spec-md" }
-  Fetch "SKILL.md"   (Join-Path $skillDir "SKILL.md")
-  Fetch "TESTING.md" (Join-Path $skillDir "TESTING.md")
+  # Distributed skill copy links to TESTING.md by URL, so no second file needed.
+  Fetch "skills/spec-md/SKILL.md" (Join-Path $skillDir "SKILL.md")
   Ok "Claude Code skill -> $skillDir"
 }
 if ($Cursor)   { Fetch ".cursor/rules/spec-md.mdc"        (Join-Path $Dir ".cursor/rules/spec-md.mdc");        Ok "Cursor rule installed" }
