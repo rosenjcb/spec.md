@@ -1,6 +1,6 @@
 /**
  * Mirror @rosenjcb/spec-md's version into every consumer-facing manifest.
- * Run after `changeset version` (via `npm run changeset:version`).
+ * Run after `changeset version` (via `pnpm run changeset:version`).
  */
 import { readFileSync, writeFileSync } from 'node:fs'
 import path from 'node:path'

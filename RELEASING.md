@@ -2,12 +2,14 @@
 
 Automated releases follow the [Changesets](https://github.com/changesets/changesets) flow used in [rosenjcb/kb](https://github.com/rosenjcb/kb): version on the PR branch, tag + publish on merge to `main`.
 
+Repo tooling uses **pnpm** (`pnpm-workspace.yaml`). Consumers still install the CLI from npm (`npm i -D @rosenjcb/spec-md` / `npx`).
+
 ## What is automated
 
 | Step | When | Workflow |
 |------|------|----------|
 | Version bump gate | PR into `main` | `specs.yml` → **Version bump required** |
-| Publish target validation | Every CI run | `npm run publish:check` |
+| Publish target validation | Every CI run | `pnpm run publish:check` |
 | Git tag `v{version}` | Merge to `main` | `changesets.yml` |
 | npm publish | Tag push | `release.yml` |
 | GitHub Release | Tag push | `release.yml` |
@@ -77,7 +79,7 @@ If `changesets.yml` already created the `v0.2.0` tag when you merge this PR, edi
 /plugin install spec-md@spec-md
 ```
 
-No separate platform upload. `npm run changeset:version` keeps plugin version fields in sync with the CLI.
+No separate platform upload. `pnpm run changeset:version` keeps plugin version fields in sync with the CLI.
 
 ---
 
@@ -96,16 +98,16 @@ No separate platform upload. `npm run changeset:version` keeps plugin version fi
 
 2. **Apply the bump** on your branch:
    ```bash
-   npm install
-   npm run changeset:version
+   pnpm install
+   pnpm run changeset:version
    ```
    This bumps `cli/package.json`, writes `cli/CHANGELOG.md`, and syncs plugin manifests.
 
 3. **Verify locally:**
    ```bash
-   npm run changeset:check -- --base origin/main
-   npm run publish:check
-   npm test
+   pnpm run changeset:check -- --base origin/main
+   pnpm run publish:check
+   pnpm test
    ```
 
 4. **Open PR → merge to `main`.**
@@ -114,7 +116,7 @@ No separate platform upload. `npm run changeset:version` keeps plugin version fi
 
 ### Docs-only / SKILL.md changes
 
-No version bump required if you did not change `cli/` or `action.yml`. Adapters still need `npm run sync`.
+No version bump required if you did not change `cli/` or `action.yml`. Adapters still need `pnpm run sync`.
 
 ---
 
@@ -122,8 +124,8 @@ No version bump required if you did not change `cli/` or `action.yml`. Adapters 
 
 | Symptom | Fix |
 |---------|-----|
-| `Version bump required` CI failed | Add changeset + run `npm run changeset:version`, commit |
-| `publish:check` version mismatch | Run `npm run changeset:version` or `node scripts/sync-versions.mjs` |
+| `Version bump required` CI failed | Add changeset + run `pnpm run changeset:version`, commit |
+| `publish:check` version mismatch | Run `pnpm run changeset:version` or `node scripts/sync-versions.mjs` |
 | `NPM_TOKEN` missing in release | Add secret (step 1 above) |
 | npm 404 on `npx @rosenjcb/spec-md` | First publish not done yet (step 1 above) |
 | Action works on `@main` but not Marketplace | First marketplace release not published (step 2 above) |

@@ -19,7 +19,7 @@ const CHECK = process.argv.includes("--check");
 const GH_BLOB = "https://github.com/rosenjcb/spec.md/blob/main";
 
 const BANNER = (source) =>
-  `<!-- GENERATED FROM ${source} — do not edit. Run: npm run sync (or node scripts/sync-adapters.mjs) -->`;
+  `<!-- GENERATED FROM ${source} — do not edit. Run: pnpm run sync (or node scripts/sync-adapters.mjs) -->`;
 
 /** Split leading `--- ... ---` frontmatter from a markdown file. */
 function split(text) {
@@ -108,7 +108,7 @@ for (const t of targets) {
 
 if (CHECK) {
   if (drift) {
-    console.error(`\n${drift} adapter(s) out of date. Run: npm run sync`);
+    console.error(`\n${drift} adapter(s) out of date. Run: pnpm run sync`);
     process.exit(1);
   }
   console.log("✓ all adapters are in sync with SKILL.md");

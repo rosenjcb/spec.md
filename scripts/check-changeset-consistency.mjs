@@ -1,7 +1,7 @@
 /**
  * Merge-to-main version gate for @rosenjcb/spec-md.
  *
- * Policy: create one pending `.changeset/*.md`, run `npm run changeset:version` on
+ * Policy: create one pending `.changeset/*.md`, run `pnpm run changeset:version` on
  * the branch, commit, then merge. Versioning is not performed after merge.
  *
  * Usage:
@@ -110,7 +110,7 @@ export function evaluateChangesetConsistency(input) {
 
   if (input.pendingChangesets.length === 1) {
     errors.push(
-      `Pending changeset not applied: ${input.pendingChangesets[0]}. Run \`npm run changeset:version\`, commit, then push.`
+      `Pending changeset not applied: ${input.pendingChangesets[0]}. Run \`pnpm run changeset:version\`, commit, then push.`
     )
   }
 
@@ -122,7 +122,7 @@ export function evaluateChangesetConsistency(input) {
 
   if (base === head) {
     errors.push(
-      `@rosenjcb/spec-md source changed but version is still ${base}. Add a changeset and run \`npm run changeset:version\`.`
+      `@rosenjcb/spec-md source changed but version is still ${base}. Add a changeset and run \`pnpm run changeset:version\`.`
     )
     return { ok: false, errors, notes }
   }
@@ -157,7 +157,7 @@ function assertNoPendingChangesets() {
     console.error(`❌ Pending changeset on main: ${file}`)
   }
   console.error(
-    'Apply the bump on the PR branch (`npm run changeset:version`), commit, then merge.'
+    'Apply the bump on the PR branch (`pnpm run changeset:version`), commit, then merge.'
   )
   process.exit(1)
 }

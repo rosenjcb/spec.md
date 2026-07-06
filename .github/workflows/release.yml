@@ -16,17 +16,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
+          cache: "pnpm"
           registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
-        run: npm ci --ignore-scripts
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Verify publish targets
-        run: npm run publish:check
+        run: pnpm run publish:check
 
       - name: CLI tests
         run: node cli/test/run.js
@@ -62,7 +66,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Verify npm publish
-        run: npm run publish:check -- --check-npm
+        run: pnpm run publish:check -- --check-npm
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
