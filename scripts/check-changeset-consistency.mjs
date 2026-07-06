@@ -86,6 +86,8 @@ function formatExpectedBumpSteps(base) {
 export function shippedSourceChanged(changedFiles) {
   return changedFiles.some(file => {
     if (file.endsWith('.spec.md')) return false
+    if (file.startsWith('cli/test/')) return false
+    if (file.startsWith('scripts/test/')) return false
     if (file.startsWith('cli/') && !file.startsWith('cli/CHANGELOG.md')) return true
     if (file === 'action.yml') return true
     return false

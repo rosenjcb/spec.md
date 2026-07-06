@@ -124,6 +124,8 @@ test('isSingleSemverStep accepts patch, minor, and major', () => {
 test('shippedSourceChanged ignores docs and CHANGELOG', () => {
   assert.equal(shippedSourceChanged(['SKILL.md', 'README.md']), false)
   assert.equal(shippedSourceChanged(['cli/CHANGELOG.md']), false)
+  assert.equal(shippedSourceChanged(['cli/test/run.js']), false)
+  assert.equal(shippedSourceChanged(['scripts/test/run.js']), false)
   assert.equal(shippedSourceChanged(['examples/pizza-ts/specs/order.spec.md']), false)
   assert.equal(shippedSourceChanged(['cli/lib/lint.js']), true)
   assert.equal(shippedSourceChanged(['action.yml']), true)
