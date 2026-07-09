@@ -38,7 +38,7 @@ Paths default to the current directory and are searched recursively for
 | Flag | Applies to | Meaning |
 |------|-----------|---------|
 | `--strict` | lint, coverage, check | Exit non-zero on warnings / coverage gaps. |
-| `--require-approved` | lint, check | Fail if a spec declares a `status` other than `approved`. Specs with no `status` key are not gated — adopting the [review lifecycle](https://github.com/rosenjcb/spec.md/blob/main/REVIEW.md) is opt-in per spec. |
+| `--require-approved` | lint, check | Fail unless every review record linked from a spec's `review` key has `status: approved`. Specs with no linked review — and notice records with no `status` — are not gated; the [review lifecycle](https://github.com/rosenjcb/spec.md/blob/main/REVIEW.md) is opt-in per spec. |
 | `--json` | lint, coverage, list | Machine-readable output. |
 | `--tests <path>` | coverage | Search this path for `[TC-N]` tags instead of the spec's `tests` field. |
 | `--out <path>` | new | Output file path. |
@@ -72,9 +72,9 @@ $ spec-md coverage examples/pizza-ts
 - run: npx @rosenjcb/spec-md check --strict
 ```
 
-To use spec review as a merge gate — a spec rides its feature branch as
-`status: draft` or `in-review` and the PR only goes green once the review
-concludes and the status flips to `approved`:
+To use spec review as a merge gate — the spec and its review record ride
+the feature branch together, and the PR only goes green once the record's
+`status` flips to `approved`:
 
 ```yaml
 - run: npx @rosenjcb/spec-md check --strict --require-approved

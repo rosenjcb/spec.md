@@ -228,8 +228,8 @@ ${c.bold("Commands")}
 
 ${c.bold("Options")}
   --strict            Exit non-zero on warnings / coverage gaps
-  --require-approved  lint/check: fail if a spec declares a \`status\` other
-                      than "approved" (merge gate for the review lifecycle)
+  --require-approved  lint/check: fail unless every review record linked from
+                      a spec's \`review\` key has status "approved" (merge gate)
   --json              Machine-readable output
   --tests <path>      coverage: search this path for [TC-N] tags
   --out <path>        new: output file path
@@ -244,7 +244,7 @@ ${c.bold("Examples")}
   spec-md lint                    ${c.gray("# lint every spec in the repo")}
   spec-md coverage src/orders     ${c.gray("# coverage for specs under a dir")}
   spec-md check --strict          ${c.gray("# CI gate")}
-  spec-md check --require-approved ${c.gray("# merge gate: declared statuses must be approved")}
+  spec-md check --require-approved ${c.gray("# merge gate: linked reviews must be approved")}
   spec-md new billing             ${c.gray("# scaffold billing.spec.md")}
 `);
 }

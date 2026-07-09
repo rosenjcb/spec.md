@@ -108,10 +108,14 @@ test("coverage --strict exits non-zero when a TC has no test", () => {
   );
 });
 
-test("lint --require-approved fails a spec still in review", () => {
+test("lint --require-approved fails when the linked review is still open", () => {
   withTempSpec(
-    `---\ntype: Spec\ntitle: Draft thing\nstatus: in-review\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
-    (_dir, file) => {
+    `---\ntype: Spec\ntitle: Draft thing\nreview: ./thing.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (dir, file) => {
+      writeFileSync(
+        join(dir, "thing.review.md"),
+        `---\ntype: Review\ntitle: "Review: Thing"\nspec: ./thing.spec.md\nstatus: open\n---\n`,
+      );
       const { code, out } = run(["lint", "--require-approved", file]);
       assert.equal(code, 1, out);
       assert.match(out, /must be "approved"/);
@@ -122,15 +126,39 @@ test("lint --require-approved fails a spec still in review", () => {
   );
 });
 
-test("lint --require-approved passes approved and status-less specs", () => {
+test("lint --require-approved fails when the linked review is missing", () => {
   withTempSpec(
-    `---\ntype: Spec\ntitle: No status\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    `---\ntype: Spec\ntitle: Dangling\nreview: ./gone.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", "--require-approved", file]);
+      assert.equal(code, 1, out);
+      assert.match(out, /missing record/);
+    },
+  );
+});
+
+test("lint --require-approved passes approved, notice, and review-less specs", () => {
+  // No review key at all — not gated.
+  withTempSpec(
+    `---\ntype: Spec\ntitle: No review\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
     (_dir, file) => {
       const { code, out } = run(["lint", "--require-approved", file]);
       assert.equal(code, 0, out);
     },
   );
-  // The pizza-ts example declares status: approved.
+  // A notice: linked review with no status — not gated.
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Noticed\nreview: ./thing.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (dir, file) => {
+      writeFileSync(
+        join(dir, "thing.review.md"),
+        `---\ntype: Review\ntitle: "Review: Thing"\nspec: ./thing.spec.md\nmode: notice\n---\n`,
+      );
+      const { code, out } = run(["lint", "--require-approved", file]);
+      assert.equal(code, 0, out);
+    },
+  );
+  // The pizza-ts example links an approved review.
   const { code, out } = run(["lint", "--require-approved", exampleSpec]);
   assert.equal(code, 0, out);
 });

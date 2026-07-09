@@ -12,9 +12,10 @@ inevitably diverge, and the signature ends up attached to text nobody is
 building from. If the spec says one thing and the sheet says another, what did
 the signee actually approve?
 
-The convention here is the opposite: **roles live in the spec's metadata, and
-everything a stakeholder reads is derived from the spec** — crafted per
-audience, regenerated when the spec changes, never maintained by hand.
+The convention here is the opposite: **the review is a structured document
+beside the spec, and everything a stakeholder reads is derived from the
+spec** — crafted per audience, regenerated when the spec changes, never
+maintained by hand.
 
 ---
 
@@ -51,9 +52,9 @@ from yet, you are not ready for a review.
 alignment is actually at risk. If the work is unambiguous — a bug fix that
 restores specced behavior, a small requirement everyone already agrees on —
 update the spec directly on your branch and let ordinary PR review carry it.
-Only opening a review round flips `status` to `in-review`; direct updates
-leave it `approved`, so the [merge gate](#the-branch-lifecycle) never blocks
-work that never needed a review.
+A direct update involves no record and trips no gate — the
+[merge gate](#the-branch-lifecycle) only reads review records, and only when
+a spec links one.
 
 The deciding factors are not bug-versus-feature but **ambiguity** (could two
 reasonable people build different things?), **blast radius** (how much code —
@@ -81,7 +82,7 @@ flowchart TD
     extend --> gate
 
     gate -- no --> direct["Update directly —<br/>PR review is enough"]
-    gate -- yes --> round["Open a review round<br/>(status: in-review)"]
+    gate -- yes --> round["Open a review<br/>(record status: open)"]
     round --> goal{What is the goal?}
     goal -- awareness --> notice["mode: notice"]
     goal -- accountability --> signoff["mode: signoff"]
@@ -96,8 +97,9 @@ of this document only exists for the paths that reach `mode: notice` or
 
 ## Roles
 
-Roles follow [DACI](https://www.atlassian.com/team-playbook/plays/daci):
-Driver, Approver, Contributors, Informed.
+Roles follow [DACI](https://www.atlassian.com/team-playbook/plays/daci) —
+Driver, Approver, Contributors, Informed — and are declared in the review
+record's frontmatter.
 
 Each role is asked for something different — that is the point. A signature
 from someone who only needed a heads-up is noise; a heads-up to someone who
@@ -118,9 +120,11 @@ consider splitting it.
 
 ## Spec front matter
 
-Roles are declared in the spec's own metadata, alongside the existing keys.
-All of these are optional, like the rest of the frontmatter — add them when a
-spec reaches the point of needing a review.
+The spec itself gains a single optional key: where its review lives. The two
+documents point at each other — the spec's `review` key, the record's `spec`
+key — and everything about the review, **including the approval state**,
+belongs to the record. Approval is a property of the review, so that is
+where it is tracked; the spec carries no status of its own.
 
 ```yaml
 ---
@@ -128,11 +132,6 @@ type: Spec
 title: "Spec: Orders"
 sources: [./src/orders]
 tests: [./test/orders]
-status: in-review
-driver: hank.hill@stricklandpropane.com
-approvers: [buck.strickland@stricklandpropane.com]
-contributors: [qa-leads, joe.jack@stricklandpropane.com]
-informed: [support, sales]
 review: ./order.review.md
 timestamp: 2026-07-09T14:30:00Z
 ---
@@ -140,25 +139,18 @@ timestamp: 2026-07-09T14:30:00Z
 
 | Key | Required | Purpose |
 |-----|----------|---------|
-| `status` | No | Where the spec is in its life: `draft`, `in-review`, `approved`, `superseded` (suggested vocabulary, not enforced). |
-| `driver` | No | The person authoring the spec and running its review. |
-| `approvers` | No | Who must explicitly sign off. Keep it to one or two. |
-| `contributors` | No | Who is asked for input. People or team aliases. |
-| `informed` | No | Who gets notified. No action expected of them. |
-| `review` | No | Spec-relative path to the review record (see below), e.g. `./order.review.md`. A URL is allowed when the record must live elsewhere. |
-
-`status: approved` does **not** mean frozen. A spec is living; the status
-reflects the most recent review round, not a promise that nothing will change.
+| `review` | No | Spec-relative path to the review record, e.g. `./order.review.md`. The record's `spec` key points back. |
 
 ---
 
 ## The review record
 
-The review record is the artifact stakeholders actually interact with. It
-lives **in the repo, next to the spec** — `order.spec.md` gets an
-`order.review.md` — and the spec's `review` key points at it with a
-spec-relative path. That completes the frontmatter triad: `sources` is what
-implements the spec, `tests` is what proves it, `review` is who agreed to it.
+The review record is the artifact stakeholders actually interact with. It is
+an OKF document like the spec itself — `type: Review` — living **in the
+repo, next to the spec**: `order.spec.md` gets an `order.review.md`, and the
+spec's `review` key points at it. That completes the frontmatter triad:
+`sources` is what implements the spec, `tests` is what proves it, `review`
+is who agreed to it.
 
 It is tempting to treat the record as knowledge-base material, but a review
 is a one-time artifact: generated, signed, then load-bearing forever. Wiki
@@ -169,40 +161,88 @@ stakeholders live in Notion or Confluence, publish a read-only mirror there
 (the same job `resource` does for the spec itself) and record outcomes in the
 repo.
 
-Keep one record file per spec, appending a section per round (kickoff,
-pre-build, …) so the full review history reads top to bottom.
+### Record frontmatter
 
-Its contract is rule 2: **no restated content.** It contains:
+The review's identity, participants, and state are metadata. Only `type`,
+`title`, and `spec` are required.
 
-- The **mode, milestone, and goal**, stated up front (see below).
-- A **link to the spec** — optionally noting the version reviewed (a commit
-  SHA), so a later reader can see what has changed since.
+```yaml
+---
+type: Review
+title: "Review: Orders — pre-build signoff"
+spec: ./order.spec.md
+revision: a1b2c3d
+mode: signoff
+milestone: pre-build
+status: open
+driver: hank.hill@stricklandpropane.com
+approvers: [buck.strickland@stricklandpropane.com]
+contributors: [joe.jack@stricklandpropane.com, enrique@stricklandpropane.com]
+informed: [support, sales]
+deadline: 2026-07-16
+timestamp: 2026-07-09T14:30:00Z
+---
+```
+
+| Key | Required | Purpose |
+|-----|----------|---------|
+| `type` | **Yes** | Always `Review`. |
+| `title` | **Yes** | Human-readable name. |
+| `spec` | **Yes** | Path to the spec under review, relative to this file. |
+| `status` | No | `open`, then `approved` or `rejected`. The state the [merge gate](#the-branch-lifecycle) reads. A `notice` has nothing to approve and omits it. |
+| `revision` | No | The spec commit the briefings were derived from. |
+| `mode` | No | `notice` or `signoff` (see [Modes](#modes-notice-vs-signoff)). |
+| `milestone` | No | `kickoff`, `pre-build`, or `pre-release`. |
+| `driver` | No | Runs the review; usually the spec's author. |
+| `approvers` | No | Who must explicitly sign off. Keep it to one or two. |
+| `contributors` | No | Who is asked for input. People or team aliases. |
+| `informed` | No | Who gets notified. Nothing is asked of them. |
+| `deadline` | No | When the round closes; contributor silence past it = no objection. |
+| `resource` | No | Read-only mirror in the knowledge base, if stakeholders live there. |
+| `timestamp` | No | ISO 8601 of last update. |
+
+`status: approved` does **not** freeze the spec. It records that this review
+concluded; the spec keeps living.
+
+### Record body
+
+The body is rule 2 applied — derived, never hand-authored. It contains:
+
+- The **goal and instructions**, stated up front.
 - The **roles table** — who holds each role and what they are asked to do,
   with checkboxes for approvers only.
 - A **briefing per stakeholder** — written for that person's role and
-  concerns, from the spec at the pinned version, citing the sections and
+  concerns, from the spec at the pinned `revision`, citing the sections and
   `FR-N`/`TC-N` rows it summarizes so every claim is one click from its
   source. The briefing is the whole ask; the rest of the spec is context,
   not homework. Have an agent draft these — the spec, the roles, and the
   delta are all machine-readable — and regenerate them when the spec
   changes.
-- A **deadline**, and the lazy-consensus rule spelled out.
-- On a repeat round: **what changed since the last review, by ID** —
-  `FR-3 [UPDATED]`, `TC-9 [NEW]`. Because `FR-N`/`TC-N` IDs are permanent,
-  this list is derivable from the spec's history; nothing is hand-copied.
-  It also scopes the round: briefings cover the delta, not the whole
-  document.
+- The **outcome**, once the round closes.
+
+### One record, one review
+
+A record is **one review** — a go/no-go before the work. Most specs will
+only ever have one; treat a second round as the exception, not the shape of
+the file. When a spec later changes enough to warrant re-review,
+**regenerate the record in place**: new `revision`, `status` back to `open`,
+fresh briefings covering the delta by `FR-N`/`TC-N` id (derivable from the
+spec's history — nothing is hand-copied). The old round is not lost; it is a
+commit away. Git history is the archive, so the file never becomes a
+changelog.
 
 ### Modes: notice vs. signoff
 
 The mode answers rule 1 — what is this review *for?*
 
-- **`notice`** — the goal is awareness. No signatures are collected; the
-  record is a broadcast with a link and an open invitation to comment. At
-  most, track acknowledgments to learn who actually reads what you send.
-- **`signoff`** — the goal is accountability. Approvers must explicitly
-  check the box; contributors get an input window; the driver ships when the
-  approvals are in or the deadline passes with no objections.
+- **`notice`** — the goal is awareness. No signatures are collected and the
+  record carries no `status` — there is nothing to approve. The record is a
+  broadcast with briefings and an open invitation to comment. At most, track
+  acknowledgments to learn who actually reads what you send.
+- **`signoff`** — the goal is accountability. The record carries `status`
+  (`open` → `approved`/`rejected`); approvers must explicitly check the box;
+  contributors get an input window; the driver ships when the approvals are
+  in or the deadline passes with no objections.
 
 If you only need people to know something is happening, send a notice — do
 not manufacture signatures. If someone is accountable for the outcome, they
@@ -211,21 +251,28 @@ sign against the spec itself, having read it.
 ### Example
 
 ```md
-# Review: Spec — Orders (pre-build signoff)
+---
+type: Review
+title: "Review: Orders — pre-build signoff"
+spec: ./order.spec.md
+revision: a1b2c3d
+mode: signoff
+milestone: pre-build
+status: open
+driver: hank.hill@stricklandpropane.com
+approvers: [buck.strickland@stricklandpropane.com]
+contributors: [joe.jack@stricklandpropane.com, enrique@stricklandpropane.com]
+informed: [support, sales]
+deadline: 2026-07-16
+---
 
-**Mode:** signoff
-**Milestone:** pre-build
-**Spec:** [order.spec.md](./order.spec.md) (as of `a1b2c3d`)
-**Driver:** Hank
-**Deadline:** 2026-07-16
-
-Your briefing below is the whole ask. It was written for your role from the
-spec version linked above, and every claim in it cites the section or ID it
-came from. If it is correct and complete for your area, check the box next
-to your name to record your approval. If something is wrong or missing,
-comment on the spec or raise it with the driver. We ship when every
-approver has signed off — contributor silence past the deadline is taken
-as "no objection."
+Your briefing below is the whole ask. It was written for your role from
+[the spec](./order.spec.md) at revision `a1b2c3d`, and every claim in it
+cites the section or ID it came from. If it is correct and complete for
+your area, check the box next to your name to record your approval. If
+something is wrong or missing, comment on the spec or raise it with the
+driver. We ship when every approver has signed off — contributor silence
+past the deadline is taken as "no objection."
 
 | Role | Who | Asked to | Done |
 |------|-----|----------|------|
@@ -238,19 +285,20 @@ as "no objection."
 
 **Buck (Product)** — You are approving what Orders commits to: orders are
 priced from validated inputs and immutable once placed
-([FR-3](./order.spec.md#functional-requirements), updated this round —
-adjustments now go through refund flows only), and payments and inventory
-stay out ([Scope](./order.spec.md#scope)).
+([FR-3](./order.spec.md#functional-requirements)); adjustments go through
+refund flows only, and payments and inventory stay out
+([Scope](./order.spec.md#scope)).
 
-**Joe Jack (QA)** — [TC-9](./order.spec.md#qa-test-cases) is new: retrieval
-must 404 on unknown ids. The [FR-3] change also reshapes your immutability
-cases. Flag anything your harness can't assert before the deadline.
+**Joe Jack (QA)** — Acceptance is the cases in
+[QA Test Cases](./order.spec.md#qa-test-cases): invalid requests are
+validation errors ([TC-5]), retrieval must 404 on unknown ids ([TC-9]).
+Flag anything your harness cannot assert before the deadline.
 
 **Enrique (Design)** — Post-purchase editing is off the table: once placed,
 an order can only be viewed or refunded ([FR-3]). If the confirmation flow
-you're designing assumes edits, raise it now.
+you are designing assumes edits, raise it now.
 
-**Changes since last round:** FR-3 [UPDATED], TC-9 [NEW]
+**Outcome:** pending — closes 2026-07-16.
 ```
 
 ---
@@ -288,14 +336,14 @@ unknowingly signs off on requirements that have not been written yet.
 Because the spec and its review record are files, the review rides the same
 workflow as the code:
 
-1. The spec (and its record) are drafted on a **feature branch** —
-   `status: draft`, then `in-review` when a round opens.
+1. The spec and its record are drafted on a **feature branch** — the record
+   opens with `status: open`.
 2. The review runs **on the pull request**. Approvers who live in the repo
    can sign by approving the PR; the driver checks the boxes in the record
    either way, so the record — not the platform — is the system of record.
-3. The round concludes: the driver flips `status: approved` (bumping
-   `timestamp`) and the PR merges. The main branch only ever carries
-   approved specs.
+3. The review concludes: the driver flips the record to `status: approved`
+   (bumping its `timestamp`) and the PR merges. The main branch only ever
+   carries approved reviews.
 
 CI holds the gate:
 
@@ -303,11 +351,12 @@ CI holds the gate:
 npx @rosenjcb/spec-md check --require-approved
 ```
 
-This fails while any spec still declares `draft` or `in-review`. It is the
-**only** enforcement in the convention, and it is opt-in twice over: the flag
-must be passed, and a spec that declares no `status` is not gated. There is
+This fails while any spec links a review record whose `status` is not
+`approved`. It is the **only** enforcement in the convention, and it is
+opt-in twice over: the flag must be passed, and a spec that links no review
+is not gated (nor is a `notice`, which carries no `status`). There is
 deliberately no rule that invalidates a signature when a spec changes after
-its review — the driver decides when a new round is warranted, and the
+its review — the driver decides when re-review is warranted, and the
 permanent IDs and `[NEW]`/`[UPDATED]` markers make "what changed since you
 last looked" cheap to communicate without restating anything. We want a
 baseline of how teams actually use reviews (how many people read,
@@ -317,26 +366,29 @@ acknowledge, comment) before hardening anything further.
 
 ## Checklist
 
-- [ ] The review record states its mode (`notice` or `signoff`), milestone,
-      and goal up front.
+- [ ] The record's frontmatter declares `type: Review`, its `spec`, `mode`,
+      and `milestone`; the goal is stated up front in the body.
+- [ ] The spec's `review` key and the record's `spec` key point at each
+      other.
 - [ ] The spec meets its milestone's reviewable minimum before the record
       goes out.
-- [ ] The record pins the spec version its briefings were derived from.
-- [ ] Roles in the spec's frontmatter match the record.
+- [ ] The record pins the spec `revision` its briefings were derived from.
 - [ ] Every stakeholder gets a briefing crafted for their role, citing the
       sections and IDs it summarizes — no generic section pointers, no
       hand-maintained restatements.
 - [ ] One (or few) approvers; contributors have a deadline; informed are
       asked for nothing.
-- [ ] Repeat rounds list changes by `FR-N`/`TC-N` ID, not by copied text.
+- [ ] A re-review regenerates the record in place — new `revision`, `status`
+      back to `open`, delta by `FR-N`/`TC-N` id; git history keeps the old
+      round.
 - [ ] The record lives next to the spec; any knowledge-base copy is a
       mirror, not the source.
 
 For a worked example, see [`examples/pizza-ts`](./examples/pizza-ts):
-[`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) declares its
-roles and `status` in frontmatter, and
-[`order.review.md`](./examples/pizza-ts/specs/order.review.md) is the review
-record its `review` key points at — a completed pre-build signoff round.
+[`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) links
+[`order.review.md`](./examples/pizza-ts/specs/order.review.md), an approved
+pre-build signoff carrying the roles, per-stakeholder briefings, and the
+approval state.
 
 ### Appendix: Further reading
 

@@ -7,8 +7,8 @@ It implements a pizza ordering API directly from a single OKF spec —
 Functional Requirements (FR-*) and QA Test Cases (TC-*) trace into code, unit
 tests, and live HTTP integration requests.
 
-> Only `specs/order.spec.md` follows the OKF/spec.md format. The READMEs here
-> are ordinary developer docs.
+> The documents under `specs/` (`order.spec.md`, `order.review.md`) follow
+> the OKF/spec.md format. The READMEs here are ordinary developer docs.
 
 ## Stack
 
@@ -24,7 +24,7 @@ tests, and live HTTP integration requests.
 pizza-ts/
 ├── specs/
 │   ├── order.spec.md     # the OKF spec — the source of truth
-│   └── order.review.md   # the review record — roles, rounds, sign-off
+│   └── order.review.md   # the review record (type: Review) — roles, briefings, sign-off
 ├── src/
 │   ├── orders/           # the orders domain
 │   │   ├── types.ts          # domain types (mirror the Definitions)
@@ -108,21 +108,22 @@ one `FR` can own several `TC`s:
 
 ## Review & sign-off
 
-The spec also demonstrates the [review convention](../../REVIEW.md). Its
-frontmatter declares the review roles (`driver`, `approvers`, `contributors`,
-`informed`), a `status`, and a `review` key pointing at the review record —
-which lives right next to the spec, like `sources` and `tests`.
+The spec also demonstrates the [review convention](../../REVIEW.md): its
+`review` key points at [`specs/order.review.md`](specs/order.review.md), an
+OKF document of `type: Review` whose `spec` key points back. The record's
+frontmatter carries the roles (`driver`, `approvers`, `contributors`,
+`informed`), the `mode` and `milestone`, the pinned spec `revision` — and
+the approval state. `status: approved` lives on the review, not the spec:
+approval is a property of the review.
 
-[`specs/order.review.md`](specs/order.review.md) holds two rounds: a kickoff
-`notice` sent while the spec was only Intro and Scope, and the pre-build
-`signoff` that flipped the spec to `status: approved`. Each round pins the
-spec version and gives every stakeholder a **briefing written for their
-role** — Buck approves business boundaries, Joe Jack gets the acceptance
-cases, Enrique gets the flow constraints — each derived from the spec and
-citing the sections and `FR-N`/`TC-N` rows it summarizes. Nothing in the
-record is maintained by hand: when the spec changes, briefings are
-regenerated from it.
+The record is one go/no-go review. Every stakeholder gets a **briefing
+written for their role** — Buck approves business boundaries, Joe Jack gets
+the acceptance cases, Enrique gets the flow constraints — each derived from
+the spec and citing the sections and `FR-N`/`TC-N` rows it summarizes.
+Nothing is maintained by hand: if the spec later changes enough to need
+re-review, the record is regenerated in place and git history keeps the old
+round.
 
-In CI, `spec-md check --require-approved` turns the lifecycle into a merge
-gate: a spec riding a feature branch as `in-review` fails the check until
-its review concludes and the status flips to `approved`.
+In CI, `spec-md check --require-approved` turns this into a merge gate: a
+spec whose linked review is still `status: open` fails the check until the
+sign-off lands.

@@ -1,6 +1,6 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { parseSpec, pathList } from "./parse.js";
+import { parseFrontmatter, parseSpec, pathList } from "./parse.js";
 
 const ISO_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?)?$/;
 
@@ -10,9 +10,11 @@ const URL_RE = /^[a-z][a-z0-9+.-]*:\/\//i;
  * Lint a single spec file. Returns { filePath, problems, spec, stats }.
  * Each problem is { level: "error"|"warn", msg, line }.
  *
- * opts.requireApproved — error when the spec declares a `status` other than
- * "approved". Specs with no `status` key are not gated (adopting the review
- * lifecycle is opt-in per spec).
+ * opts.requireApproved — approval state lives on the review record: the
+ * spec's `review` key points at it, and the gate reads the record's
+ * `status`. Errors when a linked record declares a `status` other than
+ * "approved". Specs with no `review` key — and records with no `status`
+ * (notices) — are not gated: the review lifecycle is opt-in per spec.
  */
 export function lintSpec(filePath, opts = {}) {
   const spec = parseSpec(filePath);
@@ -51,8 +53,19 @@ export function lintSpec(filePath, opts = {}) {
   }
 
   // --- Review lifecycle (opt-in via --require-approved) ---
-  if (opts.requireApproved && fm.status && fm.status !== "approved") {
-    err(`\`status\` is "${fm.status}" — must be "approved" (--require-approved)`, 1);
+  if (opts.requireApproved) {
+    for (const p of pathList(fm.review)) {
+      if (URL_RE.test(p)) continue;
+      const reviewPath = resolve(dir, p);
+      if (!existsSync(reviewPath)) {
+        err(`\`review\` points at a missing record: ${p} (--require-approved)`, 1);
+        continue;
+      }
+      const review = parseFrontmatter(readFileSync(reviewPath, "utf8")).data;
+      if (review.status && review.status !== "approved") {
+        err(`review record ${p} has status "${review.status}" — must be "approved" (--require-approved)`, 1);
+      }
+    }
   }
 
   // --- Functional Requirements ---

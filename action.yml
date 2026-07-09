@@ -15,7 +15,7 @@ inputs:
     required: false
     default: "true"
   require-approved:
-    description: "Fail if a spec declares a status other than approved (merge gate for the review lifecycle; specs without a status key are not gated)."
+    description: "Fail if a spec links a review record whose status is not approved (merge gate for the review lifecycle; specs without a linked review are not gated)."
     required: false
     default: "false"
   mode:
