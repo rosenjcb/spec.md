@@ -185,7 +185,7 @@ test("parseFrontmatter reads scalars and inline arrays", () => {
   assert.equal(data.title, "Demo");
 });
 
-test("pathList normalizes comma strings and arrays", () => {
+test("pathList normalizes scalars and arrays", () => {
   assert.deepEqual(pathList("a, b ,c"), ["a", "b", "c"]);
   assert.deepEqual(pathList(["x", "y"]), ["x", "y"]);
   assert.deepEqual(pathList(""), []);
@@ -260,7 +260,7 @@ test("specTemplate scaffolds domain paths and FR/TC tables", () => {
   assert.match(body, /TC-1/);
 });
 
-test("specTemplate turns comma-separated flag values into YAML arrays", () => {
+test("specTemplate renders multi-path flag values as YAML arrays", () => {
   const body = specTemplate({ domain: "billing", sources: "./src/billing, ./src/app.ts" });
   assert.match(body, /sources: \[\.\/src\/billing, \.\/src\/app\.ts\]/);
   assert.match(body, /tests: \[\.\/test\/billing\]/);

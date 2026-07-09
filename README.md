@@ -180,7 +180,7 @@ The `sources` field links the spec to the parts of the system that implement, en
 
 The `tests` field links the spec to the verification that proves it — unit suites, integration requests (such as `.http` files), end-to-end suites, or any other executable checks. Keeping tests in their own field separates *what the system does* (`sources`) from *what proves it does so* (`tests`), while letting agents and humans regenerate or validate each independently.
 
-Both fields are **YAML lists of paths relative to the spec file itself**, so a spec stays portable regardless of where it lives in the tree. In simple cases each can point to a single folder (e.g. `sources: [./src/orders]`, `tests: [./test/orders]`). In more complex systems they may be expanded into multiple paths such as `[./src/orders, ./src/app.ts]` for `sources` and `[./test/orders, ./http/orders.http]` for `tests`. (A bare comma-separated string is also accepted for backwards compatibility.) A spec with no implementation or tests yet can omit them and add them as the system grows.
+Both fields are **YAML lists of paths relative to the spec file itself**, so a spec stays portable regardless of where it lives in the tree. In simple cases each can point to a single folder (e.g. `sources: [./src/orders]`, `tests: [./test/orders]`). In more complex systems they may be expanded into multiple paths such as `[./src/orders, ./src/app.ts]` for `sources` and `[./test/orders, ./http/orders.http]` for `tests`. A spec with no implementation or tests yet can omit them and add them as the system grows.
 
 The intent is not to precisely define architecture, but to give the spec a way to stay connected to the real system as it evolves.
 

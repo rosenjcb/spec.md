@@ -62,7 +62,7 @@ export function parseFrontmatter(text) {
   return { data, hasFrontmatter: true, endLine };
 }
 
-/** Turn a frontmatter path field (YAML list, or a legacy comma-separated string) into a clean array. */
+/** Turn a frontmatter path field into a clean array of paths. */
 export function pathList(value) {
   if (value == null || value === "") return [];
   if (Array.isArray(value)) return value.map((s) => String(s).trim()).filter(Boolean);

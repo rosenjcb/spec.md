@@ -87,9 +87,8 @@ timestamp: 2026-05-28T14:30:00Z
 | `timestamp` | No | ISO 8601 of last update. |
 
 `sources` is *what the system does*; `tests` is *what proves it*. Both are
-YAML lists of paths relative to the spec file, so the spec stays portable
-(a bare comma-separated string is also accepted). Omit either if it does not
-exist yet.
+YAML lists of paths relative to the spec file, so the spec stays portable.
+Omit either if it does not exist yet.
 
 ### Intro
 

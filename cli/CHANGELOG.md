@@ -13,9 +13,8 @@
 
 ### Patch Changes
 
-- `spec-md new` scaffolds `sources`/`tests` as YAML inline arrays, the now
-  canonical form for frontmatter path lists (bare comma-separated strings are
-  still accepted everywhere).
+- `spec-md new` scaffolds `sources`/`tests` as YAML inline arrays, the
+  canonical form for frontmatter path lists.
 
 ## 0.2.0
 

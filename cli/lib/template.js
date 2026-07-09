@@ -1,4 +1,4 @@
-/** Render a frontmatter list: YAML inline array from a comma string. */
+/** Render a frontmatter path list as a YAML inline array. */
 function yamlList(value, fallback) {
   const items = String(value || fallback)
     .split(",")
