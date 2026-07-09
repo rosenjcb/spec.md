@@ -115,10 +115,13 @@ which lives right next to the spec, like `sources` and `tests`.
 
 [`specs/order.review.md`](specs/order.review.md) holds two rounds: a kickoff
 `notice` sent while the spec was only Intro and Scope, and the pre-build
-`signoff` that flipped the spec to `status: approved`. Note what the record
-does *not* contain: no requirements, no scope, no behavior. Each round links
-to the spec at a version, names who was asked for what, and lists changes
-since the prior round by `FR-N`/`TC-N` ID only.
+`signoff` that flipped the spec to `status: approved`. Each round pins the
+spec version and gives every stakeholder a **briefing written for their
+role** — Buck approves business boundaries, Joe Jack gets the acceptance
+cases, Enrique gets the flow constraints — each derived from the spec and
+citing the sections and `FR-N`/`TC-N` rows it summarizes. Nothing in the
+record is maintained by hand: when the spec changes, briefings are
+regenerated from it.
 
 In CI, `spec-md check --require-approved` turns the lifecycle into a merge
 gate: a spec riding a feature branch as `in-review` fails the check until

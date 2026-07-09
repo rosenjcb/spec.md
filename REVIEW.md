@@ -13,7 +13,8 @@ building from. If the spec says one thing and the sheet says another, what did
 the signee actually approve?
 
 The convention here is the opposite: **roles live in the spec's metadata, and
-the review artifact is a pointer, never a copy.**
+everything a stakeholder reads is derived from the spec** — crafted per
+audience, regenerated when the spec changes, never maintained by hand.
 
 ---
 
@@ -25,19 +26,22 @@ the review artifact is a pointer, never a copy.**
    *accountable* for a decision. Each demands something different from the
    people involved, so the request must say which it is (see
    [Modes](#modes-notice-vs-signoff)).
-2. **Point, don't copy.** The review record links to the spec. It never
-   restates requirements, scope, or behavior. The spec is the only place the
-   content lives; the record only tracks who was asked, what they were asked
-   for, and what they said. Pointers can be precise: deep-link the sections
-   and cite the `FR-N`/`TC-N` ids each person actually needs — nobody is
-   asked to read the whole spec, and the record stays short without copying
-   anything.
+2. **Derive, don't hand-author.** The spec is the only place content is
+   *written*. What each stakeholder reads in a review is a **briefing
+   generated from it** — crafted for that person's role and concerns, from
+   the spec at a pinned version, citing the sections and `FR-N`/`TC-N` rows
+   it summarizes. Nobody is asked to read the whole spec, and nobody is
+   handed a generic section link either. Hand-maintained restatements drift;
+   derived briefings are disposable — when the spec changes, regenerate
+   them, the way you rebuild a binary from source. This is exactly the kind
+   of projection to delegate to an agent: point it at the spec, the roles,
+   and the delta.
 
-Rule 2 presupposes there is something to point at: **the spec exists before
-the review does**, even if it is a skeletal draft. It does not have to be
-finished — how much of it must exist depends on the milestone (see
-[Reviewable minimums](#reviewable-minimums)). If there is nothing to link
-yet, you are not ready for a review.
+Rule 2 presupposes there is something to derive from: **the spec exists
+before the review does**, even if it is a skeletal draft. It does not have
+to be finished — how much of it must exist depends on the milestone (see
+[Reviewable minimums](#reviewable-minimums)). If there is nothing to derive
+from yet, you are not ready for a review.
 
 ---
 
@@ -102,7 +106,7 @@ should have had a veto is a gap.
 | Role | Verb | What the review asks of them |
 |------|------|------------------------------|
 | **Driver** | *proposes* | Authors the spec, runs the review, closes it out. |
-| **Approver** | *approves* | Reads the sections scoped to them, explicitly signs off. Blocking. Ideally one person. |
+| **Approver** | *approves* | Reads their briefing (and whatever it cites), explicitly signs off. Blocking. Ideally one person. |
 | **Contributors** | *review* | Domain input within a stated window. Silence past the deadline = no objection ("lazy consensus"). |
 | **Informed** | *acknowledge* | Notified with a link. No signature — at most a read-receipt. |
 
@@ -173,16 +177,20 @@ Its contract is rule 2: **no restated content.** It contains:
 - The **mode, milestone, and goal**, stated up front (see below).
 - A **link to the spec** — optionally noting the version reviewed (a commit
   SHA), so a later reader can see what has changed since.
-- The **roles table** — who holds each role, what they are asked to do, and
-  **what they are asked to read**: section deep-links or `FR-N`/`TC-N` lists
-  that scope each person's review to what is relevant to them. The driver
-  assigns the scopes; the rest of the spec is context, not homework.
-  Checkboxes for approvers only.
+- The **roles table** — who holds each role and what they are asked to do,
+  with checkboxes for approvers only.
+- A **briefing per stakeholder** — written for that person's role and
+  concerns, from the spec at the pinned version, citing the sections and
+  `FR-N`/`TC-N` rows it summarizes so every claim is one click from its
+  source. The briefing is the whole ask; the rest of the spec is context,
+  not homework. Have an agent draft these — the spec, the roles, and the
+  delta are all machine-readable — and regenerate them when the spec
+  changes.
 - A **deadline**, and the lazy-consensus rule spelled out.
 - On a repeat round: **what changed since the last review, by ID** —
   `FR-3 [UPDATED]`, `TC-9 [NEW]`. Because `FR-N`/`TC-N` IDs are permanent,
   this list is derivable from the spec's history; nothing is hand-copied.
-  It also scopes the re-read: reviewers revisit those rows, not the whole
+  It also scopes the round: briefings cover the delta, not the whole
   document.
 
 ### Modes: notice vs. signoff
@@ -211,20 +219,36 @@ sign against the spec itself, having read it.
 **Driver:** Hank
 **Deadline:** 2026-07-16
 
-Review the sections linked next to your name — that is the whole ask; the
-rest of the spec is context if you want it. If your sections are correct
-and complete for your area, check the box next to your name to record your
-approval. If you find a problem or disagree with a requirement, comment on
-the spec or raise it with the driver. We ship when every approver has
-signed off — contributor silence past the deadline is taken as "no
-objection."
+Your briefing below is the whole ask. It was written for your role from the
+spec version linked above, and every claim in it cites the section or ID it
+came from. If it is correct and complete for your area, check the box next
+to your name to record your approval. If something is wrong or missing,
+comment on the spec or raise it with the driver. We ship when every
+approver has signed off — contributor silence past the deadline is taken
+as "no objection."
 
-| Role | Who | Read | Asked to | Done |
-|------|-----|------|----------|------|
-| Approver | Buck (Product) | [Scope](./order.spec.md#scope), [Functional Requirements](./order.spec.md#functional-requirements) | Approve | [ ] |
-| Contributor | Joe Jack (QA) | [QA Test Cases](./order.spec.md#qa-test-cases) | Review & comment by deadline | — |
-| Contributor | Enrique (Design) | [Scope](./order.spec.md#scope) | Review & comment by deadline | — |
-| Informed | Support, Sales | — | Nothing — FYI | — |
+| Role | Who | Asked to | Done |
+|------|-----|----------|------|
+| Approver | Buck (Product) | Approve | [ ] |
+| Contributor | Joe Jack (QA) | Review & comment by deadline | — |
+| Contributor | Enrique (Design) | Review & comment by deadline | — |
+| Informed | Support, Sales | Nothing — FYI | — |
+
+### Briefings
+
+**Buck (Product)** — You are approving what Orders commits to: orders are
+priced from validated inputs and immutable once placed
+([FR-3](./order.spec.md#functional-requirements), updated this round —
+adjustments now go through refund flows only), and payments and inventory
+stay out ([Scope](./order.spec.md#scope)).
+
+**Joe Jack (QA)** — [TC-9](./order.spec.md#qa-test-cases) is new: retrieval
+must 404 on unknown ids. The [FR-3] change also reshapes your immutability
+cases. Flag anything your harness can't assert before the deadline.
+
+**Enrique (Design)** — Post-purchase editing is off the table: once placed,
+an order can only be viewed or refunded ([FR-3]). If the confirmation flow
+you're designing assumes edits, raise it now.
 
 **Changes since last round:** FR-3 [UPDATED], TC-9 [NEW]
 ```
@@ -297,10 +321,11 @@ acknowledge, comment) before hardening anything further.
       and goal up front.
 - [ ] The spec meets its milestone's reviewable minimum before the record
       goes out.
-- [ ] The record links to the spec and contains no restated requirements.
+- [ ] The record pins the spec version its briefings were derived from.
 - [ ] Roles in the spec's frontmatter match the record.
-- [ ] Every reviewer's row scopes their reading — section links or ID lists,
-      never "the whole spec".
+- [ ] Every stakeholder gets a briefing crafted for their role, citing the
+      sections and IDs it summarizes — no generic section pointers, no
+      hand-maintained restatements.
 - [ ] One (or few) approvers; contributors have a deadline; informed are
       asked for nothing.
 - [ ] Repeat rounds list changes by `FR-N`/`TC-N` ID, not by copied text.
