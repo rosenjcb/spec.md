@@ -180,6 +180,7 @@ approvers: [buck.strickland@stricklandpropane.com]
 contributors: [joe.jack@stricklandpropane.com, enrique@stricklandpropane.com]
 informed: [support, sales]
 deadline: 2026-07-16
+resource: https://notion.com/read_only_publish_page_location
 timestamp: 2026-07-09T14:30:00Z
 ---
 ```

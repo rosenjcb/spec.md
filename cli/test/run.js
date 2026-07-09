@@ -183,6 +183,32 @@ test("lint warns when a relative `review` path is missing, allows URLs", () => {
   );
 });
 
+test("lint validates `resource` URLs on specs and linked reviews", () => {
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Resource fields\nresource: https://publish.example.com/spec\nreview: ./thing.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (dir, file) => {
+      writeFileSync(
+        join(dir, "thing.review.md"),
+        `---\ntype: Review\ntitle: "Review: Thing"\nspec: ./thing.spec.md\nresource: https://publish.example.com/review\nstatus: approved\n---\n`,
+      );
+      const ok = run(["lint", "--strict", "--require-approved", file]);
+      assert.equal(ok.code, 0, ok.out);
+    },
+  );
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Bad review resource\nreview: ./thing.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (dir, file) => {
+      writeFileSync(
+        join(dir, "thing.review.md"),
+        `---\ntype: Review\ntitle: "Review: Thing"\nspec: ./thing.spec.md\nresource: not-a-url\nstatus: approved\n---\n`,
+      );
+      const bad = run(["lint", "--strict", "--require-approved", file]);
+      assert.equal(bad.code, 1, bad.out);
+      assert.match(bad.out, /`resource` in review record .* is not a valid URL/);
+    },
+  );
+});
+
 test("new scaffolds a spec that lints clean of errors", () => {
   const dir = mkdtempSync(join(tmpdir(), "spec-md-new-"));
   try {
