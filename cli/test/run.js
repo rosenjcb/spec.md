@@ -108,6 +108,81 @@ test("coverage --strict exits non-zero when a TC has no test", () => {
   );
 });
 
+test("lint --require-approved fails when the linked review is still open", () => {
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Draft thing\nreview: ./thing.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (dir, file) => {
+      writeFileSync(
+        join(dir, "thing.review.md"),
+        `---\ntype: Review\ntitle: "Review: Thing"\nspec: ./thing.spec.md\nstatus: open\n---\n`,
+      );
+      const { code, out } = run(["lint", "--require-approved", file]);
+      assert.equal(code, 1, out);
+      assert.match(out, /must be "approved"/);
+      // Without the flag the same spec passes.
+      const plain = run(["lint", file]);
+      assert.equal(plain.code, 0, plain.out);
+    },
+  );
+});
+
+test("lint --require-approved fails when the linked review is missing", () => {
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Dangling\nreview: ./gone.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", "--require-approved", file]);
+      assert.equal(code, 1, out);
+      assert.match(out, /missing record/);
+    },
+  );
+});
+
+test("lint --require-approved passes approved, notice, and review-less specs", () => {
+  // No review key at all — not gated.
+  withTempSpec(
+    `---\ntype: Spec\ntitle: No review\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", "--require-approved", file]);
+      assert.equal(code, 0, out);
+    },
+  );
+  // A notice: linked review with no status — not gated.
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Noticed\nreview: ./thing.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (dir, file) => {
+      writeFileSync(
+        join(dir, "thing.review.md"),
+        `---\ntype: Review\ntitle: "Review: Thing"\nspec: ./thing.spec.md\nmode: notice\n---\n`,
+      );
+      const { code, out } = run(["lint", "--require-approved", file]);
+      assert.equal(code, 0, out);
+    },
+  );
+  // The pizza-ts example links an approved review.
+  const { code, out } = run(["lint", "--require-approved", exampleSpec]);
+  assert.equal(code, 0, out);
+});
+
+test("lint warns when a relative `review` path is missing, allows URLs", () => {
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Review paths\nreview: ./nope.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", file]);
+      assert.equal(code, 0, out); // warning, not error
+      assert.match(out, /`review` path does not exist/);
+      const strict = run(["lint", "--strict", file]);
+      assert.equal(strict.code, 1, strict.out);
+    },
+  );
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Review URL\nreview: https://notion.example.com/page\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", "--strict", file]);
+      assert.equal(code, 0, out);
+    },
+  );
+});
+
 test("new scaffolds a spec that lints clean of errors", () => {
   const dir = mkdtempSync(join(tmpdir(), "spec-md-new-"));
   try {
@@ -138,8 +213,8 @@ test("parseFrontmatter reads scalars and inline arrays", () => {
   assert.equal(data.title, "Demo");
 });
 
-test("pathList normalizes comma strings and arrays", () => {
-  assert.deepEqual(pathList("a, b ,c"), ["a", "b", "c"]);
+test("pathList normalizes scalars and arrays", () => {
+  assert.deepEqual(pathList(" ./src/orders "), ["./src/orders"]);
   assert.deepEqual(pathList(["x", "y"]), ["x", "y"]);
   assert.deepEqual(pathList(""), []);
 });
@@ -208,9 +283,15 @@ console.log("\ntemplate");
 test("specTemplate scaffolds domain paths and FR/TC tables", () => {
   const body = specTemplate({ domain: "billing" });
   assert.match(body, /title: "Spec: Billing"/);
-  assert.match(body, /sources: \.\/src\/billing/);
+  assert.match(body, /sources: \[\.\/src\/billing\]/);
   assert.match(body, /FR-1/);
   assert.match(body, /TC-1/);
+});
+
+test("specTemplate renders multi-path flag values as YAML arrays", () => {
+  const body = specTemplate({ domain: "billing", sources: "./src/billing, ./src/app.ts" });
+  assert.match(body, /sources: \[\.\/src\/billing, \.\/src\/app\.ts\]/);
+  assert.match(body, /tests: \[\.\/test\/billing\]/);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

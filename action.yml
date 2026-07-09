@@ -14,6 +14,10 @@ inputs:
     description: "Fail the build on warnings and coverage gaps."
     required: false
     default: "true"
+  require-approved:
+    description: "Fail if a spec links a review record whose status is not approved (merge gate for the review lifecycle; specs without a linked review are not gated)."
+    required: false
+    default: "false"
   mode:
     description: "Which check to run: check (lint + coverage), lint, or coverage."
     required: false
@@ -31,5 +35,7 @@ runs:
       run: |
         strict_flag=""
         if [ "${{ inputs.strict }}" = "true" ]; then strict_flag="--strict"; fi
-        echo "spec-md ${{ inputs.mode }} ${{ inputs.path }} $strict_flag"
-        npx --yes @rosenjcb/spec-md@${{ inputs.version }} ${{ inputs.mode }} "${{ inputs.path }}" $strict_flag
+        approved_flag=""
+        if [ "${{ inputs.require-approved }}" = "true" ]; then approved_flag="--require-approved"; fi
+        echo "spec-md ${{ inputs.mode }} ${{ inputs.path }} $strict_flag $approved_flag"
+        npx --yes @rosenjcb/spec-md@${{ inputs.version }} ${{ inputs.mode }} "${{ inputs.path }}" $strict_flag $approved_flag

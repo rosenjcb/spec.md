@@ -350,7 +350,7 @@ test('extract-changelog CLI prints section for current version', () => {
     cwd: root,
     encoding: 'utf8',
   })
-  assert.match(out, /Initial release|Added|Fix/)
+  assert.match(out, /Initial release|### (Major|Minor|Patch) Changes/)
 })
 
 console.log(`\n${passed} passed, ${failed} failed`)

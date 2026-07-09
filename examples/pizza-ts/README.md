@@ -7,8 +7,8 @@ It implements a pizza ordering API directly from a single OKF spec —
 Functional Requirements (FR-*) and QA Test Cases (TC-*) trace into code, unit
 tests, and live HTTP integration requests.
 
-> Only `specs/order.spec.md` follows the OKF/spec.md format. The READMEs here
-> are ordinary developer docs.
+> The documents under `specs/` (`order.spec.md`, `order.review.md`) follow
+> the OKF/spec.md format. The READMEs here are ordinary developer docs.
 
 ## Stack
 
@@ -23,7 +23,8 @@ tests, and live HTTP integration requests.
 ```
 pizza-ts/
 ├── specs/
-│   └── order.spec.md     # the OKF spec — the source of truth
+│   ├── order.spec.md     # the OKF spec — the source of truth
+│   └── order.review.md   # the review record (type: Review) — roles, briefings, sign-off
 ├── src/
 │   ├── orders/           # the orders domain
 │   │   ├── types.ts          # domain types (mirror the Definitions)
@@ -87,10 +88,10 @@ httpyac, with assertions tied to the spec's QA Test Cases. See
 The spec's metadata splits the system into two relative-path fields, each
 mixing a folder reference with an individual file:
 
-- `sources` → `../src/orders, ../src/app.ts` — the orders domain folder plus the
-  HTTP adapter file that enforce the requirements.
-- `tests` → `../test/orders, ../http/orders.http` — the orders test suite folder
-  plus the `.http` integration requests that prove them.
+- `sources` → `[../src/orders, ../src/app.ts]` — the orders domain folder plus
+  the HTTP adapter file that enforce the requirements.
+- `tests` → `[../test/orders, ../http/orders.http]` — the orders test suite
+  folder plus the `.http` integration requests that prove them.
 
 Both are relative to `specs/order.spec.md` and are optional, but here they keep
 the spec wired to both the code and its verification.
@@ -104,3 +105,25 @@ one `FR` can own several `TC`s:
 - **FR-3** (TC-5) → `structuredClone` on store read/write (immutability)
 - **FR-4** (TC-6, TC-7, TC-8) → validation in `priceItem` / `OrderStore.create`
 - **FR-5** (TC-9) → `OrderStore.get` + `GET /orders/:id`
+
+## Review & sign-off
+
+The spec also demonstrates the [review convention](../../REVIEW.md): its
+`review` key points at [`specs/order.review.md`](specs/order.review.md), an
+OKF document of `type: Review` whose `spec` key points back. The record's
+frontmatter carries the roles (`driver`, `approvers`, `contributors`,
+`informed`), the `mode` and `milestone`, the pinned spec `revision` — and
+the approval state. `status: approved` lives on the review, not the spec:
+approval is a property of the review.
+
+The record is one go/no-go review. Every stakeholder gets a **briefing
+written for their role** — Buck approves business boundaries, Joe Jack gets
+the acceptance cases, Enrique gets the flow constraints — each derived from
+the spec and citing the sections and `FR-N`/`TC-N` rows it summarizes.
+Nothing is maintained by hand: if the spec later changes enough to need
+re-review, the record is regenerated in place and git history keeps the old
+round.
+
+In CI, `spec-md check --require-approved` turns this into a merge gate: a
+spec whose linked review is still `status: open` fails the check until the
+sign-off lands.

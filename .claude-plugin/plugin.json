@@ -1,7 +1,7 @@
 {
   "name": "spec-md",
   "description": "Author or update *.spec.md files — Open Knowledge Format specs that capture a system's intent, behavior, and verification so humans and agents stay aligned. Includes the spec-md skill and slash commands for scaffolding, linting, and coverage.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "rosenjcb",
     "url": "https://github.com/rosenjcb"

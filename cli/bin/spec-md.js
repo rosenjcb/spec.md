@@ -59,7 +59,9 @@ function cmdLint({ positional, flags }) {
     return flags.strict ? 1 : 0;
   }
 
-  const results = specs.map(lintSpec);
+  const results = specs.map((f) =>
+    lintSpec(f, { requireApproved: !!flags["require-approved"] }),
+  );
   if (flags.json) {
     console.log(JSON.stringify(results.map(({ spec, ...r }) => r), null, 2));
   } else {
@@ -226,6 +228,8 @@ ${c.bold("Commands")}
 
 ${c.bold("Options")}
   --strict            Exit non-zero on warnings / coverage gaps
+  --require-approved  lint/check: fail unless every review record linked from
+                      a spec's \`review\` key has status "approved" (merge gate)
   --json              Machine-readable output
   --tests <path>      coverage: search this path for [TC-N] tags
   --out <path>        new: output file path
@@ -240,6 +244,7 @@ ${c.bold("Examples")}
   spec-md lint                    ${c.gray("# lint every spec in the repo")}
   spec-md coverage src/orders     ${c.gray("# coverage for specs under a dir")}
   spec-md check --strict          ${c.gray("# CI gate")}
+  spec-md check --require-approved ${c.gray("# merge gate: linked reviews must be approved")}
   spec-md new billing             ${c.gray("# scaffold billing.spec.md")}
 `);
 }

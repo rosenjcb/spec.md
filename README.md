@@ -9,7 +9,7 @@
 <p><em>The constraint is no longer implementation speed.<br />The constraint is alignment.</em></p>
 
 <p>
-  <img src="https://img.shields.io/badge/version-0.2-6366F1" alt="Version 0.2" />
+  <img src="https://img.shields.io/badge/version-0.3-6366F1" alt="Version" />
   <img src="https://img.shields.io/badge/status-draft-8B5CF6" alt="Status: draft" />
   <img src="https://img.shields.io/badge/built%20on-Open%20Knowledge%20Format-22C55E" alt="Built on Open Knowledge Format" />
 </p>
@@ -150,8 +150,8 @@ To make this concrete, we’ll break the `order.spec.md` into modular sections. 
 ---
 type: Spec
 title: Spec: Orders
-sources: ./src/orders
-tests: ./test/orders
+sources: [./src/orders]
+tests: [./test/orders]
 description: The specification for the Orders domain in the Foo platform
 resource: https://notion.com/read_only_publish_page_location
 tags: [sales, orders, revenue]
@@ -167,8 +167,8 @@ This block defines the identity and external connections of the spec. Only `type
 |-----|----------|---------|
 | `type` | **Yes** | The OKF document type. For a spec.md file this is always `Spec`. |
 | `title` | **Yes** | Human-readable name of the spec. |
-| `sources` | No | Comma-separated, spec-relative paths to the code, schemas, or docs that implement or enforce the spec. |
-| `tests` | No | Comma-separated, spec-relative paths to the verification that proves the spec (unit suites, `.http` requests, e2e). |
+| `sources` | No | YAML list of spec-relative paths to the code, schemas, or docs that implement or enforce the spec. |
+| `tests` | No | YAML list of spec-relative paths to the verification that proves the spec (unit suites, `.http` requests, e2e). |
 | `description` | No | One-line summary of what the spec covers. |
 | `resource` | No | External URL where the spec is published or synchronized. |
 | `tags` | No | Freeform labels for grouping and discovery. |
@@ -180,7 +180,7 @@ The `sources` field links the spec to the parts of the system that implement, en
 
 The `tests` field links the spec to the verification that proves it — unit suites, integration requests (such as `.http` files), end-to-end suites, or any other executable checks. Keeping tests in their own field separates *what the system does* (`sources`) from *what proves it does so* (`tests`), while letting agents and humans regenerate or validate each independently.
 
-Both fields are **comma-separated lists of paths relative to the spec file itself**, so a spec stays portable regardless of where it lives in the tree. In simple cases each can point to a single folder (e.g. `sources: ./src/orders`, `tests: ./test/orders`). In more complex systems they may be expanded into multiple paths such as `./src/orders, ./src/app.ts` for `sources` and `./test/orders, ./http/orders.http` for `tests`. A spec with no implementation or tests yet can omit them and add them as the system grows.
+Both fields are **YAML lists of paths relative to the spec file itself**, so a spec stays portable regardless of where it lives in the tree. In simple cases each can point to a single folder (e.g. `sources: [./src/orders]`, `tests: [./test/orders]`). In more complex systems they may be expanded into multiple paths such as `[./src/orders, ./src/app.ts]` for `sources` and `[./test/orders, ./http/orders.http]` for `tests`. A spec with no implementation or tests yet can omit them and add them as the system grows.
 
 The intent is not to precisely define architecture, but to give the spec a way to stay connected to the real system as it evolves.
 
@@ -288,6 +288,7 @@ higher-level intent; the test cases are the concrete checks that prove it.
 ## Next Readings
 
 - [TESTING.md](./TESTING.md) — how tests relate to a `*.spec.md`. Covers unit and integration tests and the `[TC-N]` tag convention embedded in the test name, where the tag links each test back to a QA Test Case in the spec. Suggests (but does not require) Gherkin **Given / When / Then** phrasing.
+- [REVIEW.md](./REVIEW.md) — how a spec gets reviewed and signed off. A `*.review.md` record beside the spec (OKF `type: Review`) carries the roles, per-stakeholder briefings, and the approval state — everything derived from the spec, never a hand-maintained copy that can drift.
 - [examples/pizza-ts](./examples/pizza-ts) — a runnable reference implementation generated from a single OKF spec, with tagged unit tests and `.http` integration requests that trace back to it.
 
 ### Appendix: References
