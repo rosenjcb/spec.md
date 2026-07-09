@@ -88,10 +88,10 @@ httpyac, with assertions tied to the spec's QA Test Cases. See
 The spec's metadata splits the system into two relative-path fields, each
 mixing a folder reference with an individual file:
 
-- `sources` → `../src/orders, ../src/app.ts` — the orders domain folder plus the
-  HTTP adapter file that enforce the requirements.
-- `tests` → `../test/orders, ../http/orders.http` — the orders test suite folder
-  plus the `.http` integration requests that prove them.
+- `sources` → `[../src/orders, ../src/app.ts]` — the orders domain folder plus
+  the HTTP adapter file that enforce the requirements.
+- `tests` → `[../test/orders, ../http/orders.http]` — the orders test suite
+  folder plus the `.http` integration requests that prove them.
 
 Both are relative to `specs/order.spec.md` and are optional, but here they keep
 the spec wired to both the code and its verification.

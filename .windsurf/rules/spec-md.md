@@ -70,8 +70,8 @@ Only `type` and `title` are required; add the rest as the spec matures.
 ---
 type: Spec
 title: "Spec: Orders"
-sources: ./src/orders
-tests: ./test/orders, ./http/orders.http
+sources: [./src/orders]
+tests: [./test/orders, ./http/orders.http]
 description: The specification for the Orders domain
 resource: https://notion.com/read_only_publish_page_location
 tags: [sales, orders, revenue]
@@ -83,16 +83,17 @@ timestamp: 2026-05-28T14:30:00Z
 |-----|----------|---------|
 | `type` | **Yes** | Always `Spec` for a spec.md file. |
 | `title` | **Yes** | Human-readable name. |
-| `sources` | No | Comma-separated, **spec-relative** paths to code/schemas/docs that implement the spec. |
-| `tests` | No | Comma-separated, spec-relative paths to verification (unit suites, `.http`, e2e). |
+| `sources` | No | YAML list of **spec-relative** paths to code/schemas/docs that implement the spec. |
+| `tests` | No | YAML list of spec-relative paths to verification (unit suites, `.http`, e2e). |
 | `description` | No | One-line summary. |
 | `resource` | No | External URL where the spec is published/synced. |
 | `tags` | No | Freeform labels for grouping. |
 | `timestamp` | No | ISO 8601 of last update. |
 
-`sources` is *what the system does*; `tests` is *what proves it*. Both are paths
-relative to the spec file, so the spec stays portable. Omit either if it does
-not exist yet.
+`sources` is *what the system does*; `tests` is *what proves it*. Both are
+YAML lists of paths relative to the spec file, so the spec stays portable
+(a bare comma-separated string is also accepted). Omit either if it does not
+exist yet.
 
 ### Intro
 

@@ -255,9 +255,15 @@ console.log("\ntemplate");
 test("specTemplate scaffolds domain paths and FR/TC tables", () => {
   const body = specTemplate({ domain: "billing" });
   assert.match(body, /title: "Spec: Billing"/);
-  assert.match(body, /sources: \.\/src\/billing/);
+  assert.match(body, /sources: \[\.\/src\/billing\]/);
   assert.match(body, /FR-1/);
   assert.match(body, /TC-1/);
+});
+
+test("specTemplate turns comma-separated flag values into YAML arrays", () => {
+  const body = specTemplate({ domain: "billing", sources: "./src/billing, ./src/app.ts" });
+  assert.match(body, /sources: \[\.\/src\/billing, \.\/src\/app\.ts\]/);
+  assert.match(body, /tests: \[\.\/test\/billing\]/);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

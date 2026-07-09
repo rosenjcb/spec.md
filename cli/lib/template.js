@@ -1,3 +1,12 @@
+/** Render a frontmatter list: YAML inline array from a comma string. */
+function yamlList(value, fallback) {
+  const items = String(value || fallback)
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return `[${items.join(", ")}]`;
+}
+
 /** Scaffold body for `spec-md new <domain>`. */
 export function specTemplate({ domain, title, sources, tests }) {
   const now = new Date().toISOString().replace(/\.\d+Z$/, "Z");
@@ -5,8 +14,8 @@ export function specTemplate({ domain, title, sources, tests }) {
   return `---
 type: Spec
 title: "Spec: ${title || cap}"
-sources: ${sources || `./src/${domain}`}
-tests: ${tests || `./test/${domain}`}
+sources: ${yamlList(sources, `./src/${domain}`)}
+tests: ${yamlList(tests, `./test/${domain}`)}
 description: The specification for the ${cap} domain
 tags: [${domain}]
 timestamp: ${now}
