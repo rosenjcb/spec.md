@@ -23,7 +23,8 @@ tests, and live HTTP integration requests.
 ```
 pizza-ts/
 ├── specs/
-│   └── order.spec.md     # the OKF spec — the source of truth
+│   ├── order.spec.md     # the OKF spec — the source of truth
+│   └── order.review.md   # mock review record (see REVIEW.md at repo root)
 ├── src/
 │   ├── orders/           # the orders domain
 │   │   ├── types.ts          # domain types (mirror the Definitions)
@@ -104,3 +105,16 @@ one `FR` can own several `TC`s:
 - **FR-3** (TC-5) → `structuredClone` on store read/write (immutability)
 - **FR-4** (TC-6, TC-7, TC-8) → validation in `priceItem` / `OrderStore.create`
 - **FR-5** (TC-9) → `OrderStore.get` + `GET /orders/:id`
+
+## Review & sign-off
+
+The spec also demonstrates the [review convention](../../REVIEW.md). Its
+frontmatter declares the DACI roles (`driver`, `approvers`, `contributors`,
+`informed`), a `status`, and a `review` key pointing at the review record.
+
+[`specs/order.review.md`](specs/order.review.md) is a checked-in **mock** of
+that record — in a real project it would live in your knowledge base (Notion,
+Confluence) and `review` would hold its URL. Note what the record does *not*
+contain: no requirements, no scope, no behavior. It links to the spec at a
+version, names who was asked for what, and lists the changes since the prior
+round by `FR-N`/`TC-N` ID only.

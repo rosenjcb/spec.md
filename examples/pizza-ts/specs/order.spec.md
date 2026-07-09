@@ -1,12 +1,18 @@
 ---
 type: Spec
 title: "Spec: Pizza Orders"
-sources: ../src/orders
+sources: ../src/orders, ../src/app.ts
 tests: ../test/orders, ../http/orders.http
 description: The specification for the Orders domain in the pizza-ts example platform
 resource: https://notion.com/read_only_publish_page_location
+status: approved
+driver: jacob@example.com
+approvers: [alex@example.com]
+contributors: [dana@example.com, sam@example.com]
+informed: [support, sales]
+review: ./order.review.md
 tags: [pizza, orders, checkout]
-timestamp: 2026-06-27T00:00:00Z
+timestamp: 2026-07-09T00:00:00Z
 ---
 
 ### Intro

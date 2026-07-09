@@ -241,3 +241,10 @@ load-bearing part of several established practices:
 - [ ] One (or few) approvers; contributors have a deadline; informed are
       asked for nothing.
 - [ ] Repeat rounds list changes by `FR-N`/`TC-N` ID, not by copied text.
+
+For a worked example, see [`examples/pizza-ts`](./examples/pizza-ts):
+[`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) declares its DACI
+roles and `status` in frontmatter, and
+[`order.review.md`](./examples/pizza-ts/specs/order.review.md) is a
+checked-in mock of the review record its `review` key points at (in a real
+project, a knowledge-base URL).
