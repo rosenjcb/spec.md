@@ -40,6 +40,55 @@ yet, you are not ready for a review.
 
 ---
 
+## When a review is warranted
+
+**A review round is never mandatory.** It is overhead, spent only where
+alignment is actually at risk. If the work is unambiguous — a bug fix that
+restores specced behavior, a small requirement everyone already agrees on —
+update the spec directly on your branch and let ordinary PR review carry it.
+Only opening a review round flips `status` to `in-review`; direct updates
+leave it `approved`, so the [merge gate](#the-branch-lifecycle) never blocks
+work that never needed a review.
+
+The deciding factors are not bug-versus-feature but **ambiguity** (could two
+reasonable people build different things?), **blast radius** (how much code —
+or how many teams — inherit a mistake?), and **stakeholder spread** (does
+anyone outside the PR need to agree?). Bug or feature, with or without a
+prior spec, every path funnels into that one gate:
+
+```mermaid
+flowchart TD
+    change([Incoming change]) --> kind{Bug or feature?}
+
+    kind -- bug --> bspec{Prior spec?}
+    kind -- feature --> fspec{Prior spec?}
+
+    bspec -- no --> fix["Fix it. Spec the domain only<br/>if it keeps causing failures"]
+    bspec -- yes --> drift{Spec already describes<br/>the correct behavior?}
+    drift -- "yes — code drifted" --> conform["Fix the code, keep the TC-N test honest.<br/>No spec change, no review"]
+    drift -- "no — spec was wrong" --> amend["Update the rows in place,<br/>mark them UPDATED"]
+
+    fspec -- no --> author["Author the spec<br/>(create path, kickoff minimum)"]
+    fspec -- yes --> extend["Append FR-N / TC-N rows,<br/>mark them NEW"]
+
+    amend --> gate{Ambiguous, risky,<br/>or cross-team?}
+    author --> gate
+    extend --> gate
+
+    gate -- no --> direct["Update directly —<br/>PR review is enough"]
+    gate -- yes --> round["Open a review round<br/>(status: in-review)"]
+    round --> goal{What is the goal?}
+    goal -- awareness --> notice["mode: notice"]
+    goal -- accountability --> signoff["mode: signoff"]
+```
+
+The left half of the flow is ordinary spec upkeep — the
+[update rules](./SKILL.md) already cover it. The review machinery in the rest
+of this document only exists for the paths that reach `mode: notice` or
+`mode: signoff`.
+
+---
+
 ## Roles: DACI
 
 spec.md uses [DACI](https://www.atlassian.com/team-playbook/plays/daci)
@@ -76,8 +125,8 @@ spec reaches the point of needing a review.
 ---
 type: Spec
 title: "Spec: Orders"
-sources: ./src/orders
-tests: ./test/orders
+sources: [./src/orders]
+tests: [./test/orders]
 status: in-review
 driver: hank.hill@stricklandpropane.com
 approvers: [buck.strickland@stricklandpropane.com]
