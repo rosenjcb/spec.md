@@ -24,7 +24,7 @@ npm install --global @rosenjcb/spec-md
 
 | Command | What it does |
 |---------|--------------|
-| `spec-md lint [paths…]` | Validate frontmatter (`type`, `title`, path fields incl. `review`, `timestamp`), FR/TC ids, duplicate ids, and TC→FR references. |
+| `spec-md lint [paths…]` | Validate frontmatter (`type`, `title`, path fields incl. `review`, `timestamp`, `resource` URLs on specs and linked reviews), FR/TC ids, duplicate ids, and TC→FR references. |
 | `spec-md coverage [paths…]` | Report which `TC-N` have at least one `[TC-N]` test, and flag tags that reference a `TC-N` the spec never declares. |
 | `spec-md check [paths…]` | `lint` + `coverage`, strict. The one to run in CI. |
 | `spec-md list [paths…]` | List every spec with FR/TC counts and a coverage bar. |

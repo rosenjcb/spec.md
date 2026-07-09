@@ -6,6 +6,16 @@ const ISO_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})
 
 const URL_RE = /^[a-z][a-z0-9+.-]*:\/\//i;
 
+function eachResource(value, fn) {
+  if (value == null || value === "") return;
+  const values = Array.isArray(value) ? value : [value];
+  for (const raw of values) {
+    const resource = String(raw).trim();
+    if (!resource) continue;
+    fn(resource);
+  }
+}
+
 /**
  * Lint a single spec file. Returns { filePath, problems, spec, stats }.
  * Each problem is { level: "error"|"warn", msg, line }.
@@ -40,6 +50,13 @@ export function lintSpec(filePath, opts = {}) {
   if (fm.timestamp && !ISO_RE.test(String(fm.timestamp))) {
     warn(`\`timestamp\` is not a valid ISO 8601 date: "${fm.timestamp}"`, 1);
   }
+  eachResource(fm.resource, (resource) => {
+    if (!URL_RE.test(resource)) {
+      warn(`\`resource\` is not a valid URL: "${resource}"`, 1);
+    }
+  });
+
+  const reviews = new Map();
 
   // sources / tests / review paths should resolve on disk. A `review` value
   // may also be a URL (a knowledge-base mirror), which is not checked.
@@ -48,6 +65,16 @@ export function lintSpec(filePath, opts = {}) {
       if (field === "review" && URL_RE.test(p)) continue;
       if (!existsSync(resolve(dir, p))) {
         warn(`\`${field}\` path does not exist (spec-relative): ${p}`, 1);
+        continue;
+      }
+      if (field === "review") {
+        const review = parseFrontmatter(readFileSync(resolve(dir, p), "utf8")).data;
+        reviews.set(p, review);
+        eachResource(review.resource, (resource) => {
+          if (!URL_RE.test(resource)) {
+            warn(`\`resource\` in review record ${p} is not a valid URL: "${resource}"`, 1);
+          }
+        });
       }
     }
   }
@@ -61,7 +88,8 @@ export function lintSpec(filePath, opts = {}) {
         err(`\`review\` points at a missing record: ${p} (--require-approved)`, 1);
         continue;
       }
-      const review = parseFrontmatter(readFileSync(reviewPath, "utf8")).data;
+      const review =
+        reviews.get(p) ?? parseFrontmatter(readFileSync(reviewPath, "utf8")).data;
       if (review.status && review.status !== "approved") {
         err(`review record ${p} has status "${review.status}" — must be "approved" (--require-approved)`, 1);
       }
