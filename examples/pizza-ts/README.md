@@ -109,7 +109,7 @@ one `FR` can own several `TC`s:
 ## Review & sign-off
 
 The spec also demonstrates the [review convention](../../REVIEW.md). Its
-frontmatter declares the DACI roles (`driver`, `approvers`, `contributors`,
+frontmatter declares the review roles (`driver`, `approvers`, `contributors`,
 `informed`), a `status`, and a `review` key pointing at the review record —
 which lives right next to the spec, like `sources` and `tests`.
 

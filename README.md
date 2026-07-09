@@ -288,7 +288,7 @@ higher-level intent; the test cases are the concrete checks that prove it.
 ## Next Readings
 
 - [TESTING.md](./TESTING.md) — how tests relate to a `*.spec.md`. Covers unit and integration tests and the `[TC-N]` tag convention embedded in the test name, where the tag links each test back to a QA Test Case in the spec. Suggests (but does not require) Gherkin **Given / When / Then** phrasing.
-- [REVIEW.md](./REVIEW.md) — how a spec gets reviewed and signed off. Declares stakeholder roles ([DACI](https://www.atlassian.com/team-playbook/plays/daci)) in the spec's frontmatter and keeps the sign-off artifact a *pointer* to the spec — never a copy that can drift.
+- [REVIEW.md](./REVIEW.md) — how a spec gets reviewed and signed off. Declares stakeholder roles in the spec's frontmatter and keeps the sign-off artifact a *pointer* to the spec — never a copy that can drift.
 - [examples/pizza-ts](./examples/pizza-ts) — a runnable reference implementation generated from a single OKF spec, with tagged unit tests and `.http` integration requests that trace back to it.
 
 ### Appendix: References

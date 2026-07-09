@@ -87,14 +87,10 @@ of this document only exists for the paths that reach `mode: notice` or
 
 ---
 
-## Roles: DACI
+## Roles
 
-spec.md uses [DACI](https://www.atlassian.com/team-playbook/plays/daci)
-(Driver, Approver, Contributors, Informed) rather than classic RACI. A spec
-review is a *decision*, not a task breakdown, and DACI's single-approver
-discipline avoids the most common sign-off failure: six signatures, zero
-scrutiny. (If you think in RACI: Driver ≈ Responsible, Approver ≈ Accountable,
-Contributors ≈ Consulted.)
+Roles follow [DACI](https://www.atlassian.com/team-playbook/plays/daci):
+Driver, Approver, Contributors, Informed.
 
 Each role is asked for something different — that is the point. A signature
 from someone who only needed a heads-up is noise; a heads-up to someone who
@@ -107,8 +103,8 @@ should have had a veto is a gap.
 | **Contributors** | *review* | Domain input within a stated window. Silence past the deadline = no objection ("lazy consensus"). |
 | **Informed** | *acknowledge* | Notified with a link. No signature — at most a read-receipt. |
 
-Keep the approver list short. One is the DACI ideal; if a spec seems to need
-several approvers, that is usually a sign it covers more than one decision —
+Keep the approver list short — ideally one person. If a spec seems to need
+several approvers, that is usually a sign it covers more than one decision;
 consider splitting it.
 
 ---
@@ -174,7 +170,7 @@ Its contract is rule 2: **no restated content.** It contains:
 - The **mode, milestone, and goal**, stated up front (see below).
 - A **link to the spec** — optionally noting the version reviewed (a commit
   SHA), so a later reader can see what has changed since.
-- The **DACI table** — who holds each role and what they are asked to do,
+- The **roles table** — who holds each role and what they are asked to do,
   with checkboxes for approvers only.
 - A **deadline**, and the lazy-consensus rule spelled out.
 - On a repeat round: **what changed since the last review, by ID** —
@@ -291,9 +287,6 @@ acknowledge, comment) before hardening anything further.
 None of this is invented here. The convention deliberately borrows the
 load-bearing part of several established practices:
 
-- **[DACI](https://www.atlassian.com/team-playbook/plays/daci)** (Atlassian) —
-  the role vocabulary, and the single-approver discipline that keeps sign-off
-  meaningful.
 - **[MADR](https://adr.github.io/madr/)** (architecture decision records) —
   `status`, deciders, consulted, and informed as document *metadata* rather
   than prose, flipped by review rather than rewritten. ADRs also settled the
@@ -331,7 +324,7 @@ load-bearing part of several established practices:
       mirror, not the source.
 
 For a worked example, see [`examples/pizza-ts`](./examples/pizza-ts):
-[`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) declares its DACI
+[`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) declares its
 roles and `status` in frontmatter, and
 [`order.review.md`](./examples/pizza-ts/specs/order.review.md) is the review
 record its `review` key points at — a completed pre-build signoff round.
