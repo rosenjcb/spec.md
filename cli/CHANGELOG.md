@@ -15,6 +15,8 @@
 
 - `spec-md new` scaffolds `sources`/`tests` as YAML inline arrays, the
   canonical form for frontmatter path lists.
+- Frontmatter path fields (`sources`, `tests`, `review`) are read as YAML
+  lists; a bare scalar is read as a single path.
 
 ## 0.2.0
 

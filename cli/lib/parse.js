@@ -62,14 +62,12 @@ export function parseFrontmatter(text) {
   return { data, hasFrontmatter: true, endLine };
 }
 
-/** Turn a frontmatter path field into a clean array of paths. */
+/** Turn a frontmatter path field (YAML list, or a single scalar path) into a clean array. */
 export function pathList(value) {
   if (value == null || value === "") return [];
   if (Array.isArray(value)) return value.map((s) => String(s).trim()).filter(Boolean);
-  return String(value)
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
+  const single = String(value).trim();
+  return single ? [single] : [];
 }
 
 /** Parse GitHub-flavored Markdown table rows into arrays of trimmed cells. */

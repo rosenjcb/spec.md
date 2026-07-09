@@ -186,7 +186,7 @@ test("parseFrontmatter reads scalars and inline arrays", () => {
 });
 
 test("pathList normalizes scalars and arrays", () => {
-  assert.deepEqual(pathList("a, b ,c"), ["a", "b", "c"]);
+  assert.deepEqual(pathList(" ./src/orders "), ["./src/orders"]);
   assert.deepEqual(pathList(["x", "y"]), ["x", "y"]);
   assert.deepEqual(pathList(""), []);
 });
