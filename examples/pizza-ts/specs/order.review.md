@@ -25,8 +25,8 @@ objection."
 | Role | Who | Asked to | Done |
 |------|-----|----------|------|
 | Approver | Buck Strickland (Product) | Approve | ☑ 2026-07-02 |
-| Contributor | Dale Gribble (QA) | Review & comment by deadline | Commented 2026-06-30 |
-| Contributor | Peggy Hill (Design) | Review & comment by deadline | — (no objection) |
+| Contributor | Joe Jack (QA) | Review & comment by deadline | Commented 2026-06-30 |
+| Contributor | Enrique (Design) | Review & comment by deadline | — (no objection) |
 | Informed | Support, Sales | Nothing — FYI | — |
 
 **Changes since the kickoff round:** FR-5 [NEW], TC-9 [NEW] (see spec
@@ -49,8 +49,8 @@ reach out to the driver if the boundaries look wrong.
 
 | Role | Who | Asked to | Done |
 |------|-----|----------|------|
-| Contributor | Dale Gribble (QA) | Skim Scope, flag surprises | Acknowledged |
-| Contributor | Peggy Hill (Design) | Skim Scope, flag surprises | Acknowledged |
+| Contributor | Joe Jack (QA) | Skim Scope, flag surprises | Acknowledged |
+| Contributor | Enrique (Design) | Skim Scope, flag surprises | Acknowledged |
 | Informed | Support, Sales | Nothing — FYI | — |
 
 **Outcome:** no objections; drafting of Functional Requirements proceeded.

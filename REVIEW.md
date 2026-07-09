@@ -128,7 +128,7 @@ tests: [./test/orders]
 status: in-review
 driver: hank.hill@stricklandpropane.com
 approvers: [buck.strickland@stricklandpropane.com]
-contributors: [qa-leads, dale.gribble@stricklandpropane.com]
+contributors: [qa-leads, joe.jack@stricklandpropane.com]
 informed: [support, sales]
 review: ./order.review.md
 timestamp: 2026-07-09T14:30:00Z
@@ -217,8 +217,8 @@ objection."
 | Role | Who | Asked to | Done |
 |------|-----|----------|------|
 | Approver | Buck (Product) | Approve | ☐ |
-| Contributor | Dale (QA) | Review & comment by deadline | — |
-| Contributor | Peggy (Design) | Review & comment by deadline | — |
+| Contributor | Joe Jack (QA) | Review & comment by deadline | — |
+| Contributor | Enrique (Design) | Review & comment by deadline | — |
 | Informed | Support, Sales | Nothing — FYI | — |
 
 **Changes since last round:** FR-3 [UPDATED], TC-9 [NEW]

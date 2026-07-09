@@ -8,7 +8,7 @@ resource: https://notion.com/read_only_publish_page_location
 status: approved
 driver: hank.hill@stricklandpropane.com
 approvers: [buck.strickland@stricklandpropane.com]
-contributors: [dale.gribble@stricklandpropane.com, peggy.hill@stricklandpropane.com]
+contributors: [joe.jack@stricklandpropane.com, enrique@stricklandpropane.com]
 informed: [support, sales]
 review: ./order.review.md
 tags: [pizza, orders, checkout]
