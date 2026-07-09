@@ -11,41 +11,47 @@ Repo tooling uses **pnpm** (`pnpm-workspace.yaml`). Consumers still install the 
 | Version bump gate | PR into `main` | `specs.yml` → **Version bump required** |
 | Publish target validation | Every CI run | `pnpm run publish:check` |
 | Git tag `v{version}` | Merge to `main` | `changesets.yml` |
-| npm publish | Tag push | `release.yml` |
-| GitHub Release | Tag push | `release.yml` |
+| npm publish | Merge to `main` (new tag) | `changesets.yml` |
+| GitHub Release | Merge to `main` (new tag) | `changesets.yml` |
+
+Tagging, npm publish, and the GitHub Release all run in the **same** `changesets.yml`
+job on merge to `main`. They are not split into a separate tag-triggered workflow
+because a tag pushed with the default `GITHUB_TOKEN` does not trigger other
+workflows — so a `on: push: tags` release job would never fire. The publish/release
+steps are gated on the tag being newly created, so re-running on `main` without a
+version bump is a no-op.
 
 ## What stays manual (one-time)
 
-### 1. npm — first publish + token
+### 1. npm — the `NPM_TOKEN` secret
 
-`@rosenjcb/spec-md` is **not on npm yet**. Until it is, the GitHub Action and all `npx` commands fail.
+`@rosenjcb/spec-md` is already published (`npm view @rosenjcb/spec-md version`).
+The one thing CI needs in order to publish future versions automatically is an
+npm token in repo secrets. Without it, the **Publish to npm** step in
+`changesets.yml` fails and releases stay manual.
 
 **One-time setup:**
 
-1. Log in to npm (account must own the `@rosenjcb` scope):
-   ```bash
-   npm login
-   ```
+1. Create a token that works from CI (bypasses 2FA):
+   - **Granular Access Token** (recommended) scoped to `@rosenjcb/spec-md` with
+     **Read and write** on packages, or
+   - a classic **Automation** token.
 
-2. Publish the current version from your machine:
-   ```bash
-   cd cli
-   npm publish --access public
-   ```
+   npmjs.com → avatar → **Access Tokens** → **Generate New Token**.
 
-3. Create an npm **Automation** or **Publish** token at [npmjs.com/settings](https://www.npmjs.com/settings).
-
-4. Add it to GitHub repo secrets as **`NPM_TOKEN`**:
+2. Add it to GitHub repo secrets as **`NPM_TOKEN`**:
    - Repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
    - Name: `NPM_TOKEN`
    - Value: your npm token
 
-After this, `release.yml` publishes every new version automatically when a tag is pushed.
+After this, `changesets.yml` publishes every new version automatically on merge to
+`main`.
 
-Verify:
+**If you ever need the very first publish by hand** (new scope/package):
 ```bash
-npm view @rosenjcb/spec-md version
-# → 0.2.0
+npm login   # account must own the @rosenjcb scope
+cd cli
+npm publish --access public
 ```
 
 ### 2. GitHub Action Marketplace — first release
@@ -112,7 +118,7 @@ No separate platform upload. `pnpm run changeset:version` keeps plugin version f
 
 4. **Open PR → merge to `main`.**
 
-5. CI on `main` tags `v{new-version}` → `release.yml` publishes npm + GitHub Release.
+5. CI on `main` (`changesets.yml`) tags `v{new-version}` and, in the same run, publishes npm + cuts the GitHub Release.
 
 ### Docs-only / SKILL.md changes
 
@@ -129,7 +135,7 @@ No version bump required if you did not change `cli/` or `action.yml`. Adapters 
 | `NPM_TOKEN` missing in release | Add secret (step 1 above) |
 | npm 404 on `npx @rosenjcb/spec-md` | First publish not done yet (step 1 above) |
 | Action works on `@main` but not Marketplace | First marketplace release not published (step 2 above) |
-| Tag already exists | Expected if re-running; release workflow should still run for that tag |
+| Tag already exists | Expected when re-running `main` without a version bump; publish/release steps skip (no-op) |
 
 ## Branch protection (recommended)
 
