@@ -1,5 +1,11 @@
 # @rosenjcb/spec-md
 
+## 0.3.1
+
+### Patch Changes
+
+- Add support for `resource` URL validation on linked `*.review.md` frontmatter, matching spec `resource` handling.
+
 ## 0.3.0
 
 ### Minor Changes
