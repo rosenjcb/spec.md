@@ -28,7 +28,10 @@ the review artifact is a pointer, never a copy.**
 2. **Point, don't copy.** The review record links to the spec. It never
    restates requirements, scope, or behavior. The spec is the only place the
    content lives; the record only tracks who was asked, what they were asked
-   for, and what they said.
+   for, and what they said. Pointers can be precise: deep-link the sections
+   and cite the `FR-N`/`TC-N` ids each person actually needs — nobody is
+   asked to read the whole spec, and the record stays short without copying
+   anything.
 
 Rule 2 presupposes there is something to point at: **the spec exists before
 the review does**, even if it is a skeletal draft. It does not have to be
@@ -99,7 +102,7 @@ should have had a veto is a gap.
 | Role | Verb | What the review asks of them |
 |------|------|------------------------------|
 | **Driver** | *proposes* | Authors the spec, runs the review, closes it out. |
-| **Approver** | *approves* | Reads the spec, explicitly signs off. Blocking. Ideally one person. |
+| **Approver** | *approves* | Reads the sections scoped to them, explicitly signs off. Blocking. Ideally one person. |
 | **Contributors** | *review* | Domain input within a stated window. Silence past the deadline = no objection ("lazy consensus"). |
 | **Informed** | *acknowledge* | Notified with a link. No signature — at most a read-receipt. |
 
@@ -170,12 +173,17 @@ Its contract is rule 2: **no restated content.** It contains:
 - The **mode, milestone, and goal**, stated up front (see below).
 - A **link to the spec** — optionally noting the version reviewed (a commit
   SHA), so a later reader can see what has changed since.
-- The **roles table** — who holds each role and what they are asked to do,
-  with checkboxes for approvers only.
+- The **roles table** — who holds each role, what they are asked to do, and
+  **what they are asked to read**: section deep-links or `FR-N`/`TC-N` lists
+  that scope each person's review to what is relevant to them. The driver
+  assigns the scopes; the rest of the spec is context, not homework.
+  Checkboxes for approvers only.
 - A **deadline**, and the lazy-consensus rule spelled out.
 - On a repeat round: **what changed since the last review, by ID** —
   `FR-3 [UPDATED]`, `TC-9 [NEW]`. Because `FR-N`/`TC-N` IDs are permanent,
   this list is derivable from the spec's history; nothing is hand-copied.
+  It also scopes the re-read: reviewers revisit those rows, not the whole
+  document.
 
 ### Modes: notice vs. signoff
 
@@ -203,19 +211,20 @@ sign against the spec itself, having read it.
 **Driver:** Hank
 **Deadline:** 2026-07-16
 
-Please review the linked spec. If the behavior it describes is correct and
-complete for your area, check the box next to your name to record your
+Review the sections linked next to your name — that is the whole ask; the
+rest of the spec is context if you want it. If your sections are correct
+and complete for your area, check the box next to your name to record your
 approval. If you find a problem or disagree with a requirement, comment on
 the spec or raise it with the driver. We ship when every approver has
 signed off — contributor silence past the deadline is taken as "no
 objection."
 
-| Role | Who | Asked to | Done |
-|------|-----|----------|------|
-| Approver | Buck (Product) | Approve | [ ] |
-| Contributor | Joe Jack (QA) | Review & comment by deadline | — |
-| Contributor | Enrique (Design) | Review & comment by deadline | — |
-| Informed | Support, Sales | Nothing — FYI | — |
+| Role | Who | Read | Asked to | Done |
+|------|-----|------|----------|------|
+| Approver | Buck (Product) | [Scope](./order.spec.md#scope), [Functional Requirements](./order.spec.md#functional-requirements) | Approve | [ ] |
+| Contributor | Joe Jack (QA) | [QA Test Cases](./order.spec.md#qa-test-cases) | Review & comment by deadline | — |
+| Contributor | Enrique (Design) | [Scope](./order.spec.md#scope) | Review & comment by deadline | — |
+| Informed | Support, Sales | — | Nothing — FYI | — |
 
 **Changes since last round:** FR-3 [UPDATED], TC-9 [NEW]
 ```
@@ -290,6 +299,8 @@ acknowledge, comment) before hardening anything further.
       goes out.
 - [ ] The record links to the spec and contains no restated requirements.
 - [ ] Roles in the spec's frontmatter match the record.
+- [ ] Every reviewer's row scopes their reading — section links or ID lists,
+      never "the whole spec".
 - [ ] One (or few) approvers; contributors have a deadline; informed are
       asked for nothing.
 - [ ] Repeat rounds list changes by `FR-N`/`TC-N` ID, not by copied text.

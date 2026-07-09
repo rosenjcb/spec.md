@@ -15,19 +15,20 @@ convention.
 **Driver:** Hank Hill
 **Deadline:** 2026-07-04
 
-Please review the linked spec. If the behavior it describes is correct and
-complete for your area, check the box next to your name to record your
+Review the sections linked next to your name — that is the whole ask; the
+rest of the spec is context if you want it. If your sections are correct
+and complete for your area, check the box next to your name to record your
 approval. If you find a problem or disagree with a requirement, comment on
 the spec or raise it with the driver. We build when every approver has
 signed off — contributor silence past the deadline is taken as "no
 objection."
 
-| Role | Who | Asked to | Done |
-|------|-----|----------|------|
-| Approver | Buck Strickland (Product) | Approve | [x] 2026-07-02 |
-| Contributor | Joe Jack (QA) | Review & comment by deadline | Commented 2026-06-30 |
-| Contributor | Enrique (Design) | Review & comment by deadline | — (no objection) |
-| Informed | Support, Sales | Nothing — FYI | — |
+| Role | Who | Read | Asked to | Done |
+|------|-----|------|----------|------|
+| Approver | Buck Strickland (Product) | [Scope](./order.spec.md#scope), [Functional Requirements](./order.spec.md#functional-requirements) | Approve | [x] 2026-07-02 |
+| Contributor | Joe Jack (QA) | [QA Test Cases](./order.spec.md#qa-test-cases) | Review & comment by deadline | Commented 2026-06-30 |
+| Contributor | Enrique (Design) | [Scope](./order.spec.md#scope), [Definitions](./order.spec.md#definitions) | Review & comment by deadline | — (no objection) |
+| Informed | Support, Sales | — | Nothing — FYI | — |
 
 **Changes since the kickoff round:** FR-5 [NEW], TC-9 [NEW] (see spec
 history — nothing is restated here).
@@ -47,10 +48,10 @@ Heads-up: we are speccing the Orders domain. Intro and Scope are drafted at
 the link — requirements come next. No action needed; comment on the spec or
 reach out to the driver if the boundaries look wrong.
 
-| Role | Who | Asked to | Done |
-|------|-----|----------|------|
-| Contributor | Joe Jack (QA) | Skim Scope, flag surprises | Acknowledged |
-| Contributor | Enrique (Design) | Skim Scope, flag surprises | Acknowledged |
-| Informed | Support, Sales | Nothing — FYI | — |
+| Role | Who | Read | Asked to | Done |
+|------|-----|------|----------|------|
+| Contributor | Joe Jack (QA) | [Intro](./order.spec.md#intro), [Scope](./order.spec.md#scope) | Flag surprises | Acknowledged |
+| Contributor | Enrique (Design) | [Intro](./order.spec.md#intro), [Scope](./order.spec.md#scope) | Flag surprises | Acknowledged |
+| Informed | Support, Sales | — | Nothing — FYI | — |
 
 **Outcome:** no objections; drafting of Functional Requirements proceeded.
