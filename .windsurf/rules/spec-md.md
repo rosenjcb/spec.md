@@ -28,13 +28,25 @@ describes.
 - A spec needs stakeholder sign-off, or a sign-off was granted and the
   review record must be updated
 
-## Creating vs. updating
+## Step 0: Triage
 
-This skill covers both. First decide which you are doing:
+Before touching files, settle two things. Classify them from the user's
+request and the state of the repo when the signal is clear; ask — one or two
+questions, not a quiz — only when it is not.
 
-- **No spec exists** for the system → create one. Do Step 1, then Step 2.
-- **A `*.spec.md` already exists** → update it. Do Step 1, then **Step 2u**
-  instead of Step 2. The rest (Steps 3–5) applies to both.
+1. **Create or update?** Look before asking: a `*.spec.md` already covering
+   the domain → update it (Step 1, then **Step 2u**). None → create one
+   (Step 1, then Step 2). The rest (Steps 3–5) applies to both.
+2. **Will it need a review?** Judge the scale of what is being asked:
+   **ambiguity** (could two reasonable people build different things?),
+   **blast radius** (how much inherits a mistake?), and **stakeholder
+   spread** (does anyone outside the PR need to agree?). Small and
+   unambiguous → no review; say so and move on. Clearly risky or
+   cross-team → plan a review record (Step 5) and confirm who is involved.
+   Genuinely unclear → ask the user directly.
+
+The review decision is made **here, up front**; the record itself is written
+in Step 5, once there is a spec to derive it from.
 
 The critical update rule: **`FR-N` and `TC-N` IDs are permanent.** Test names
 tag back to them via `[TC-N]`, so renumbering silently breaks that link. Never
@@ -196,17 +208,14 @@ tag it `[smoke]` if it is not an acceptance criterion.
 - Note known mismatches between code and spec in a short "Known issues" section.
 - Flag any `FR-N` with no `TC-N`, and any `TC-N` with no `[TC-N]` test.
 
-## Step 5: Offer a review (optional)
+## Step 5: The review record (only if triage said so)
 
-Most specs need no review round. After drafting, ask the user **one
-question**: does this spec need stakeholder sign-off, or does ordinary PR
-review carry it? The deciding factors are ambiguity, blast radius, and
-stakeholder spread — see
+Whether a review is needed was settled in Step 0 — most specs need none; if
+that was the answer, stop here and create no record. The full convention is
 [REVIEW.md](https://github.com/rosenjcb/spec.md/blob/main/REVIEW.md).
 
-**If no**: stop. Do not create a review record.
-
-**If yes**, create `<domain>.review.md` next to the spec and link the two:
+If a review is needed, create `<domain>.review.md` next to the spec and
+link the two:
 
 1. Ask who holds the roles — driver, approver(s) (ideally one),
    contributors, informed — plus the mode (`notice` or `signoff`), the
@@ -233,6 +242,10 @@ warrants re-review. If it does, regenerate the record in place — new
 `revision`, `status: open`, fresh briefings covering the delta by
 `FR-N`/`TC-N` id. Git history keeps the old round; do not append rounds to
 the file.
+
+Hand-off is manual by design: the record is one document, so give
+stakeholders the document — a link to the file or its `resource` mirror,
+over Slack or email. Do not build or wire up notification machinery.
 
 ## Principles
 

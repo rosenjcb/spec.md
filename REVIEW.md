@@ -231,6 +231,14 @@ spec's history — nothing is hand-copied). The old round is not lost; it is a
 commit away. Git history is the archive, so the file never becomes a
 changelog.
 
+### Distribution
+
+One record means one thing to hand out. Publish the file (or its `resource`
+mirror) and drop the link in Slack — that is the entire delivery mechanism,
+deliberately. The convention is validating on a manual loop first, so there
+is no notification tooling to configure or maintain; if the loop proves
+valuable, automate the fan-out later.
+
 ### Modes: notice vs. signoff
 
 The mode answers rule 1 — what is this review *for?*
