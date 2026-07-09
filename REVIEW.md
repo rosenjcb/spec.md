@@ -209,11 +209,12 @@ sign against the spec itself, having read it.
 **Driver:** Hank
 **Deadline:** 2026-07-16
 
-Please review the linked spec. If you're comfortable with the behavior it
-describes, check the box next to your name to signal you've reviewed and
-approve. If anything gives you pause, comment on the spec or reach out to
-the driver. We ship when every approver has signed off — contributor
-silence past the deadline is taken as "no objection."
+Please review the linked spec. If the behavior it describes is correct and
+complete for your area, check the box next to your name to record your
+approval. If you find a problem or disagree with a requirement, comment on
+the spec or raise it with the driver. We ship when every approver has
+signed off — contributor silence past the deadline is taken as "no
+objection."
 
 | Role | Who | Asked to | Done |
 |------|-----|----------|------|
