@@ -282,33 +282,6 @@ acknowledge, comment) before hardening anything further.
 
 ---
 
-## Prior art: methodologies we lean on
-
-None of this is invented here. The convention deliberately borrows the
-load-bearing part of several established practices:
-
-- **[MADR](https://adr.github.io/madr/)** (architecture decision records) —
-  `status`, deciders, consulted, and informed as document *metadata* rather
-  than prose, flipped by review rather than rewritten. ADRs also settled the
-  location question long ago: decision records live in the repo, beside what
-  they govern. Review records follow suit.
-- **[PEP process](https://peps.python.org/pep-0001/)** — a `Status` field plus
-  a `Resolution` link: the document records *that* it was decided and points
-  at *where*, instead of embedding the deliberation.
-- **[Rust RFC final comment period](https://forge.rust-lang.org/lang/fcp.html)** —
-  checkbox-per-reviewer, a time-boxed window, and lazy consensus: silence
-  past the deadline is consent, explicit concerns block.
-- **[DORA on change approval](https://dora.dev/capabilities/streamlining-change-approval/)** —
-  external approval gates correlate with slower delivery and no reduction in
-  failure rate. Reviews here are alignment tools, not deployment gates, and
-  stay deliberately lightweight.
-- **Version-bound approval** (regulated-industry design history files) — a
-  signature should attach to a *version reference* of the source document,
-  never to restated text. We adopt the pointer discipline as a convention,
-  not (yet) as an enforced gate.
-
----
-
 ## Checklist
 
 - [ ] The review record states its mode (`notice` or `signoff`), milestone,
@@ -328,3 +301,11 @@ For a worked example, see [`examples/pizza-ts`](./examples/pizza-ts):
 roles and `status` in frontmatter, and
 [`order.review.md`](./examples/pizza-ts/specs/order.review.md) is the review
 record its `review` key points at — a completed pre-build signoff round.
+
+### Appendix: Further reading
+
+- Atlassian Team Playbook, DACI: https://www.atlassian.com/team-playbook/plays/daci
+- MADR — Markdown Architecture Decision Records: https://adr.github.io/madr/
+- PEP 1 — PEP Purpose and Guidelines: https://peps.python.org/pep-0001/
+- Rust RFC final comment period: https://forge.rust-lang.org/lang/fcp.html
+- DORA, Streamlining change approval: https://dora.dev/capabilities/streamlining-change-approval/
