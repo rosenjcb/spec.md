@@ -32,6 +32,12 @@ the review artifact is a pointer, never a copy.**
    content lives; the record only tracks who was asked, what they were asked
    for, and what they said.
 
+Rule 2 presupposes there is something to point at: **the spec exists before
+the review does**, even if it is a skeletal draft. It does not have to be
+finished — how much of it must exist depends on the milestone (see
+[Reviewable minimums](#reviewable-minimums)). If there is nothing to link
+yet, you are not ready for a review.
+
 ---
 
 ## Roles: DACI
@@ -104,7 +110,7 @@ repo — and the spec's `review` key points at it.
 
 Its contract is rule 2: **no restated content.** It contains:
 
-- The **mode and goal**, stated up front (see below).
+- The **mode, milestone, and goal**, stated up front (see below).
 - A **link to the spec** — optionally noting the version reviewed (a commit
   SHA or page version), so a later reader can see what has changed since.
 - The **DACI table** — who holds each role and what they are asked to do,
@@ -160,16 +166,30 @@ silence past the deadline is taken as "no objection."
 ## Milestones, not gates
 
 A review can be requested at any point in a spec's life, and the record says
-which point that is:
+which point that is. The spec always exists before the review does — that is
+what makes rule 2 possible — but "exists" scales with the milestone.
 
-- **Kickoff** — align on Intro and Scope before requirements are written.
-- **Pre-build** — align on `FR-N`/`TC-N` before code is generated from them.
-- **Pre-release** — confirm the shipped behavior matches the spec.
+### Reviewable minimums
 
-Nothing here requires the spec to be finished before people are brought in —
-a kickoff notice on a half-written spec is a perfectly good review. Handoff
-and authoring can overlap; the mode and milestone just make explicit what
-stage of the spec people are looking at.
+Each milestone has a reviewable minimum: the sections that must be written
+for the review to mean anything, and the question the review is actually
+asking.
+
+| Milestone | The spec has at least | The review asks |
+|-----------|-----------------------|-----------------|
+| **Kickoff** | Frontmatter (`type`, `title`), Intro, Scope — `??` markers and gaps welcome | Are we solving the right problem, with the right boundaries? |
+| **Pre-build** | + Definitions and Functional Requirements (`FR-N`); QA Test Cases for the core paths | Is this the behavior we want built? |
+| **Pre-release** | + full `TC-N` coverage, `sources`/`tests` linked | Did we ship what the spec says? |
+
+A signee at kickoff is approving boundaries, not behavior — the record's
+milestone tells them which. Below the kickoff minimum there is no review to
+run: if all you have is an idea, that is a conversation, not a review record.
+
+Nothing here requires the spec to be *finished* before people are brought in —
+a kickoff review of a spec that is mostly Scope and open questions is a
+perfectly good review. Handoff and authoring can overlap; the milestone just
+makes explicit what stage of the spec people are looking at, so nobody
+unknowingly signs off on requirements that have not been written yet.
 
 Deliberately, **nothing is enforced yet**. There is no lint rule that a spec
 must be `approved`, no gate that invalidates a signature when the spec
@@ -212,8 +232,10 @@ load-bearing part of several established practices:
 
 ## Checklist
 
-- [ ] The review record states its mode (`notice` or `signoff`) and goal up
-      front.
+- [ ] The review record states its mode (`notice` or `signoff`), milestone,
+      and goal up front.
+- [ ] The spec meets its milestone's reviewable minimum before the record
+      goes out.
 - [ ] The record links to the spec and contains no restated requirements.
 - [ ] Roles in the spec's frontmatter match the record.
 - [ ] One (or few) approvers; contributors have a deadline; informed are
