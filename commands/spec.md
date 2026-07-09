@@ -16,6 +16,10 @@ Use the **spec-md** skill. Follow its "create" path:
    structure.
 3. Name it `<domain>.spec.md` and place it next to the code it describes or in
    a `specs/` directory; set `sources`/`tests` relative to that location.
+4. Ask whether the spec needs stakeholder sign-off (skill Step 5). If so,
+   create `<domain>.review.md` next to it — `type: Review`, roles,
+   per-stakeholder briefings, `status: open` — and link the two. Leave it
+   `open`; only the user's word flips it to `approved`.
 
 If `$ARGUMENTS` is empty, ask which feature or domain to spec, then proceed.
 

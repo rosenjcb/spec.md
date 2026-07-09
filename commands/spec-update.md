@@ -15,6 +15,10 @@ Use the **spec-md** skill. Follow its "update" path (Step 2u):
    free id; retire obsolete ones with `[REMOVED]` rather than deleting.
 3. Mark new/changed rows with `[NEW]` / `[UPDATED]` while in review.
 4. Reconcile `sources`/`tests` if paths moved, and bump `timestamp`.
+5. If the spec links an approved `*.review.md`, ask whether this change
+   warrants re-review (skill Step 5). If so, regenerate the record in place —
+   new `revision`, `status: open`, delta briefings by id — and never flip it
+   to `approved` without the user's word.
 
 If `$ARGUMENTS` doesn't point at a file, run `npx @rosenjcb/spec-md list` (or search for
 `*.spec.md`) to find the right spec, then confirm before editing.
