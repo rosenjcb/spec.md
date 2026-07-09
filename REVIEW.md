@@ -79,11 +79,11 @@ title: "Spec: Orders"
 sources: ./src/orders
 tests: ./test/orders
 status: in-review
-driver: jacob@example.com
-approvers: [alex@example.com]
-contributors: [qa-leads, dana@example.com]
+driver: hank.hill@stricklandpropane.com
+approvers: [buck.strickland@stricklandpropane.com]
+contributors: [qa-leads, dale.gribble@stricklandpropane.com]
 informed: [support, sales]
-review: https://notion.so/orders-spec-review
+review: ./order.review.md
 timestamp: 2026-07-09T14:30:00Z
 ---
 ```
@@ -95,7 +95,7 @@ timestamp: 2026-07-09T14:30:00Z
 | `approvers` | No | Who must explicitly sign off. Keep it to one or two. |
 | `contributors` | No | Who is asked for input. People or team aliases. |
 | `informed` | No | Who gets notified. No action expected of them. |
-| `review` | No | URL of the review record (see below) — the counterpart of `resource`. |
+| `review` | No | Spec-relative path to the review record (see below), e.g. `./order.review.md`. A URL is allowed when the record must live elsewhere. |
 
 `status: approved` does **not** mean frozen. A spec is living; the status
 reflects the most recent review round, not a promise that nothing will change.
@@ -105,14 +105,28 @@ reflects the most recent review round, not a promise that nothing will change.
 ## The review record
 
 The review record is the artifact stakeholders actually interact with. It
-lives in your knowledge base (Notion, Confluence, a Google Doc) — not in the
-repo — and the spec's `review` key points at it.
+lives **in the repo, next to the spec** — `order.spec.md` gets an
+`order.review.md` — and the spec's `review` key points at it with a
+spec-relative path. That completes the frontmatter triad: `sources` is what
+implements the spec, `tests` is what proves it, `review` is who agreed to it.
+
+It is tempting to treat the record as knowledge-base material, but a review
+is a one-time artifact: generated, signed, then load-bearing forever. Wiki
+pages get reorganized, archived, and lost; a record committed beside the spec
+keeps its history, survives as long as the code does, and is bound by the
+commit graph to the exact version of the spec it reviewed — for free. If your
+stakeholders live in Notion or Confluence, publish a read-only mirror there
+(the same job `resource` does for the spec itself) and record outcomes in the
+repo.
+
+Keep one record file per spec, appending a section per round (kickoff,
+pre-build, …) so the full review history reads top to bottom.
 
 Its contract is rule 2: **no restated content.** It contains:
 
 - The **mode, milestone, and goal**, stated up front (see below).
 - A **link to the spec** — optionally noting the version reviewed (a commit
-  SHA or page version), so a later reader can see what has changed since.
+  SHA), so a later reader can see what has changed since.
 - The **DACI table** — who holds each role and what they are asked to do,
   with checkboxes for approvers only.
 - A **deadline**, and the lazy-consensus rule spelled out.
@@ -141,8 +155,9 @@ sign against the spec itself, having read it.
 # Review: Spec — Orders (pre-build signoff)
 
 **Mode:** signoff
-**Spec:** github.com/acme/platform/blob/main/specs/order.spec.md (as of `a1b2c3d`)
-**Driver:** Jacob
+**Milestone:** pre-build
+**Spec:** [order.spec.md](./order.spec.md) (as of `a1b2c3d`)
+**Driver:** Hank
 **Deadline:** 2026-07-16
 
 Please review the linked spec. If you're comfortable with the behavior it
@@ -153,9 +168,9 @@ silence past the deadline is taken as "no objection."
 
 | Role | Who | Asked to | Done |
 |------|-----|----------|------|
-| Approver | Alex | Approve | ☐ |
-| Contributor | Dana (QA) | Review & comment by deadline | — |
-| Contributor | Sam (Design) | Review & comment by deadline | — |
+| Approver | Buck (Product) | Approve | ☐ |
+| Contributor | Dale (QA) | Review & comment by deadline | — |
+| Contributor | Peggy (Design) | Review & comment by deadline | — |
 | Informed | Support, Sales | Nothing — FYI | — |
 
 **Changes since last round:** FR-3 [UPDATED], TC-9 [NEW]
@@ -191,14 +206,35 @@ perfectly good review. Handoff and authoring can overlap; the milestone just
 makes explicit what stage of the spec people are looking at, so nobody
 unknowingly signs off on requirements that have not been written yet.
 
-Deliberately, **nothing is enforced yet**. There is no lint rule that a spec
-must be `approved`, no gate that invalidates a signature when the spec
-changes. When a spec changes materially after a signoff, the driver decides
-whether a new round is warranted — the permanent IDs and `[NEW]`/`[UPDATED]`
-markers make "what changed since you last looked" cheap to communicate
-without restating anything. We want a baseline of how teams actually use
-reviews (how many people read, acknowledge, comment) before hardening any of
-this into tooling.
+### The branch lifecycle
+
+Because the spec and its review record are files, the review rides the same
+workflow as the code:
+
+1. The spec (and its record) are drafted on a **feature branch** —
+   `status: draft`, then `in-review` when a round opens.
+2. The review runs **on the pull request**. Approvers who live in the repo
+   can sign by approving the PR; the driver checks the boxes in the record
+   either way, so the record — not the platform — is the system of record.
+3. The round concludes: the driver flips `status: approved` (bumping
+   `timestamp`) and the PR merges. The main branch only ever carries
+   approved specs.
+
+CI holds the gate:
+
+```bash
+npx @rosenjcb/spec-md check --require-approved
+```
+
+This fails while any spec still declares `draft` or `in-review`. It is the
+**only** enforcement in the convention, and it is opt-in twice over: the flag
+must be passed, and a spec that declares no `status` is not gated. There is
+deliberately no rule that invalidates a signature when a spec changes after
+its review — the driver decides when a new round is warranted, and the
+permanent IDs and `[NEW]`/`[UPDATED]` markers make "what changed since you
+last looked" cheap to communicate without restating anything. We want a
+baseline of how teams actually use reviews (how many people read,
+acknowledge, comment) before hardening anything further.
 
 ---
 
@@ -212,7 +248,9 @@ load-bearing part of several established practices:
   meaningful.
 - **[MADR](https://adr.github.io/madr/)** (architecture decision records) —
   `status`, deciders, consulted, and informed as document *metadata* rather
-  than prose, flipped by review rather than rewritten.
+  than prose, flipped by review rather than rewritten. ADRs also settled the
+  location question long ago: decision records live in the repo, beside what
+  they govern. Review records follow suit.
 - **[PEP process](https://peps.python.org/pep-0001/)** — a `Status` field plus
   a `Resolution` link: the document records *that* it was decided and points
   at *where*, instead of embedding the deliberation.
@@ -241,10 +279,11 @@ load-bearing part of several established practices:
 - [ ] One (or few) approvers; contributors have a deadline; informed are
       asked for nothing.
 - [ ] Repeat rounds list changes by `FR-N`/`TC-N` ID, not by copied text.
+- [ ] The record lives next to the spec; any knowledge-base copy is a
+      mirror, not the source.
 
 For a worked example, see [`examples/pizza-ts`](./examples/pizza-ts):
 [`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) declares its DACI
 roles and `status` in frontmatter, and
-[`order.review.md`](./examples/pizza-ts/specs/order.review.md) is a
-checked-in mock of the review record its `review` key points at (in a real
-project, a knowledge-base URL).
+[`order.review.md`](./examples/pizza-ts/specs/order.review.md) is the review
+record its `review` key points at — a completed pre-build signoff round.

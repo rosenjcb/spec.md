@@ -108,6 +108,53 @@ test("coverage --strict exits non-zero when a TC has no test", () => {
   );
 });
 
+test("lint --require-approved fails a spec still in review", () => {
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Draft thing\nstatus: in-review\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", "--require-approved", file]);
+      assert.equal(code, 1, out);
+      assert.match(out, /must be "approved"/);
+      // Without the flag the same spec passes.
+      const plain = run(["lint", file]);
+      assert.equal(plain.code, 0, plain.out);
+    },
+  );
+});
+
+test("lint --require-approved passes approved and status-less specs", () => {
+  withTempSpec(
+    `---\ntype: Spec\ntitle: No status\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", "--require-approved", file]);
+      assert.equal(code, 0, out);
+    },
+  );
+  // The pizza-ts example declares status: approved.
+  const { code, out } = run(["lint", "--require-approved", exampleSpec]);
+  assert.equal(code, 0, out);
+});
+
+test("lint warns when a relative `review` path is missing, allows URLs", () => {
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Review paths\nreview: ./nope.review.md\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", file]);
+      assert.equal(code, 0, out); // warning, not error
+      assert.match(out, /`review` path does not exist/);
+      const strict = run(["lint", "--strict", file]);
+      assert.equal(strict.code, 1, strict.out);
+    },
+  );
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Review URL\nreview: https://notion.example.com/page\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | x |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", "--strict", file]);
+      assert.equal(code, 0, out);
+    },
+  );
+});
+
 test("new scaffolds a spec that lints clean of errors", () => {
   const dir = mkdtempSync(join(tmpdir(), "spec-md-new-"));
   try {

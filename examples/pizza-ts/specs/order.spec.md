@@ -6,9 +6,9 @@ tests: ../test/orders, ../http/orders.http
 description: The specification for the Orders domain in the pizza-ts example platform
 resource: https://notion.com/read_only_publish_page_location
 status: approved
-driver: jacob@example.com
-approvers: [alex@example.com]
-contributors: [dana@example.com, sam@example.com]
+driver: hank.hill@stricklandpropane.com
+approvers: [buck.strickland@stricklandpropane.com]
+contributors: [dale.gribble@stricklandpropane.com, peggy.hill@stricklandpropane.com]
 informed: [support, sales]
 review: ./order.review.md
 tags: [pizza, orders, checkout]

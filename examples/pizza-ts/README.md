@@ -24,7 +24,7 @@ tests, and live HTTP integration requests.
 pizza-ts/
 ├── specs/
 │   ├── order.spec.md     # the OKF spec — the source of truth
-│   └── order.review.md   # mock review record (see REVIEW.md at repo root)
+│   └── order.review.md   # the review record — roles, rounds, sign-off
 ├── src/
 │   ├── orders/           # the orders domain
 │   │   ├── types.ts          # domain types (mirror the Definitions)
@@ -110,11 +110,16 @@ one `FR` can own several `TC`s:
 
 The spec also demonstrates the [review convention](../../REVIEW.md). Its
 frontmatter declares the DACI roles (`driver`, `approvers`, `contributors`,
-`informed`), a `status`, and a `review` key pointing at the review record.
+`informed`), a `status`, and a `review` key pointing at the review record —
+which lives right next to the spec, like `sources` and `tests`.
 
-[`specs/order.review.md`](specs/order.review.md) is a checked-in **mock** of
-that record — in a real project it would live in your knowledge base (Notion,
-Confluence) and `review` would hold its URL. Note what the record does *not*
-contain: no requirements, no scope, no behavior. It links to the spec at a
-version, names who was asked for what, and lists the changes since the prior
-round by `FR-N`/`TC-N` ID only.
+[`specs/order.review.md`](specs/order.review.md) holds two rounds: a kickoff
+`notice` sent while the spec was only Intro and Scope, and the pre-build
+`signoff` that flipped the spec to `status: approved`. Note what the record
+does *not* contain: no requirements, no scope, no behavior. Each round links
+to the spec at a version, names who was asked for what, and lists changes
+since the prior round by `FR-N`/`TC-N` ID only.
+
+In CI, `spec-md check --require-approved` turns the lifecycle into a merge
+gate: a spec riding a feature branch as `in-review` fails the check until
+its review concludes and the status flips to `approved`.

@@ -4,11 +4,17 @@ import { parseSpec, pathList } from "./parse.js";
 
 const ISO_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?)?$/;
 
+const URL_RE = /^[a-z][a-z0-9+.-]*:\/\//i;
+
 /**
  * Lint a single spec file. Returns { filePath, problems, spec, stats }.
  * Each problem is { level: "error"|"warn", msg, line }.
+ *
+ * opts.requireApproved — error when the spec declares a `status` other than
+ * "approved". Specs with no `status` key are not gated (adopting the review
+ * lifecycle is opt-in per spec).
  */
-export function lintSpec(filePath) {
+export function lintSpec(filePath, opts = {}) {
   const spec = parseSpec(filePath);
   const problems = [];
   const dir = dirname(filePath);
@@ -33,13 +39,20 @@ export function lintSpec(filePath) {
     warn(`\`timestamp\` is not a valid ISO 8601 date: "${fm.timestamp}"`, 1);
   }
 
-  // sources / tests paths should resolve on disk.
-  for (const field of ["sources", "tests"]) {
+  // sources / tests / review paths should resolve on disk. A `review` value
+  // may also be a URL (a knowledge-base mirror), which is not checked.
+  for (const field of ["sources", "tests", "review"]) {
     for (const p of pathList(fm[field])) {
+      if (field === "review" && URL_RE.test(p)) continue;
       if (!existsSync(resolve(dir, p))) {
         warn(`\`${field}\` path does not exist (spec-relative): ${p}`, 1);
       }
     }
+  }
+
+  // --- Review lifecycle (opt-in via --require-approved) ---
+  if (opts.requireApproved && fm.status && fm.status !== "approved") {
+    err(`\`status\` is "${fm.status}" — must be "approved" (--require-approved)`, 1);
   }
 
   // --- Functional Requirements ---
