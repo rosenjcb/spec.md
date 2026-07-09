@@ -216,7 +216,7 @@ objection."
 
 | Role | Who | Asked to | Done |
 |------|-----|----------|------|
-| Approver | Buck (Product) | Approve | ☐ |
+| Approver | Buck (Product) | Approve | [ ] |
 | Contributor | Joe Jack (QA) | Review & comment by deadline | — |
 | Contributor | Enrique (Design) | Review & comment by deadline | — |
 | Informed | Support, Sales | Nothing — FYI | — |

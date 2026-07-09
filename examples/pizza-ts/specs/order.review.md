@@ -24,7 +24,7 @@ objection."
 
 | Role | Who | Asked to | Done |
 |------|-----|----------|------|
-| Approver | Buck Strickland (Product) | Approve | ☑ 2026-07-02 |
+| Approver | Buck Strickland (Product) | Approve | [x] 2026-07-02 |
 | Contributor | Joe Jack (QA) | Review & comment by deadline | Commented 2026-06-30 |
 | Contributor | Enrique (Design) | Review & comment by deadline | — (no objection) |
 | Informed | Support, Sales | Nothing — FYI | — |
