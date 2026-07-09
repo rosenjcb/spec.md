@@ -1,7 +1,5 @@
 # Review & sign-off in spec.md
 
-Version 0.1 — Draft
-
 This document describes how a `*.spec.md` gets reviewed, acknowledged, and
 signed off by the people around it — without duplicating the spec into a
 second artifact that can drift.

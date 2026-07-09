@@ -1,7 +1,5 @@
 # Testing in spec.md
 
-Version 0.2 — Draft
-
 This document describes how tests relate to a `*.spec.md` file. The goal is the
 same as the spec itself: keep intent, behavior, and verification synchronized so
 both humans and agents can trust that the system does what the spec says.
