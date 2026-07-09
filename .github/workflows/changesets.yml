@@ -1,6 +1,11 @@
-# Tag on merge to main. Versioning happens on the PR branch (`pnpm run changeset:version`),
-# enforced by the merge gate in specs.yml. This workflow only fails if unconsumed
-# changesets slipped onto main, then tags @rosenjcb/spec-md's version.
+# Tag + publish on merge to main. Versioning happens on the PR branch
+# (`pnpm run changeset:version`), enforced by the merge gate in specs.yml.
+# This workflow fails if unconsumed changesets slipped onto main, tags
+# @rosenjcb/spec-md's version, and — when the tag is newly created — publishes
+# to npm and cuts a GitHub Release in the same run.
+#
+# Publishing lives here (not a separate tag-triggered workflow) because a tag
+# pushed with the default GITHUB_TOKEN does not trigger other workflows.
 name: Changesets
 
 on:
@@ -12,8 +17,8 @@ permissions:
   contents: write
 
 jobs:
-  tag:
-    name: Tag release
+  release:
+    name: Tag, publish npm, and GitHub Release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,6 +32,7 @@ jobs:
         with:
           node-version: "20"
           cache: "pnpm"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
@@ -37,7 +43,66 @@ jobs:
       - name: Verify publish target consistency
         run: pnpm run publish:check
 
+      - name: Tests
+        run: pnpm test
+
+      # Tags v{version} when new. Sets outputs: created, version, tag.
       - name: Tag release
+        id: tag
         run: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract changelog
+        if: steps.tag.outputs.created == 'true'
+        id: notes
+        shell: bash
+        run: |
+          NOTES="$(node scripts/extract-changelog.mjs "${{ steps.tag.outputs.version }}")"
+          {
+            echo 'body<<EOF'
+            if [ -n "$NOTES" ]; then
+              echo "$NOTES"
+            else
+              echo "_No changelog entry for ${{ steps.tag.outputs.tag }}._"
+            fi
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Publish to npm
+        if: steps.tag.outputs.created == 'true'
+        working-directory: cli
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Verify npm publish
+        if: steps.tag.outputs.created == 'true'
+        run: pnpm run publish:check -- --check-npm
+
+      - name: Create GitHub Release
+        if: steps.tag.outputs.created == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: "@rosenjcb/spec-md ${{ steps.tag.outputs.tag }}"
+          body: |
+            ## @rosenjcb/spec-md ${{ steps.tag.outputs.tag }}
+
+            ${{ steps.notes.outputs.body }}
+
+            ### Install
+
+            ```bash
+            npm install --save-dev @rosenjcb/spec-md@${{ steps.tag.outputs.version }}
+            npx @rosenjcb/spec-md check
+            ```
+
+            ```yaml
+            - uses: rosenjcb/spec.md@${{ steps.tag.outputs.tag }}
+            ```
+
+            > **GitHub Action Marketplace:** automated releases do not check "Publish to Marketplace".
+            > On the first release, open the release in GitHub and enable marketplace publishing manually.
+            > See [RELEASING.md](https://github.com/rosenjcb/spec.md/blob/main/RELEASING.md).
+          generate_release_notes: true
