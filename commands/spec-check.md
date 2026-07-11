@@ -16,12 +16,11 @@ If `spec-md` is not installed, fall back to reading each `*.spec.md` and checkin
 by hand:
 
 - Frontmatter has `type: Spec` and a `title`.
-- `FR-N` and `TC-N` ids are unique and well-formed.
+- `FR-N` and `TC-N` ids are unique, well-formed, **contiguous**, and
+  **ascending** (`FR-1..FR-n`, `TC-1..TC-n` in table order — no skips).
 - Every `TC-N` cites a `Requirement` that exists as an `FR-N` row.
 - `sources`/`tests` paths resolve on disk.
 
 Report the results grouped by file. For each **error**, propose the fix
-(preserving ids — never renumber; if duplicates collide, keep the older id and
-reassign the newer row to `max + 1`). If the tables are jumbled, propose a
-reorder (group TC by FR; happy → edge → error) without changing ids. Do not
+(reorder then renumber `1..n`, updating `[TC-N]` tags when ids change). Do not
 edit specs unless I ask; summarize first.

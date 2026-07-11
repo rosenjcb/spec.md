@@ -45,7 +45,7 @@ without definition. Include the field name where it helps. -->
 ### Functional Requirements
 
 <!-- Higher-level, testable statements of intent. One behavior per row.
-FR-N ids are permanent — only append, never renumber. -->
+FR-N ids must be contiguous and ascending (FR-1..FR-n). Default: append n+1. -->
 
 | ID   | Requirement |
 |------|-------------|
@@ -54,7 +54,8 @@ FR-N ids are permanent — only append, never renumber. -->
 ### QA Test Cases
 
 <!-- Concrete checks. A single FR is usually proven by several TCs.
-TC-N ids are permanent. Tests link back via a bracketed [TC-N] prefix. -->
+TC-N ids must be contiguous and ascending (TC-1..TC-n). Tests link via [TC-N].
+Cleanup that reorders rows must renumber 1..n and update [TC-N] tags. -->
 
 | Test ID | Requirement | Scenario | Expected Outcome |
 |---------|-------------|----------|------------------|

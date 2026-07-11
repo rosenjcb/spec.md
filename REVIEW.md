@@ -366,10 +366,10 @@ opt-in twice over: the flag must be passed, and a spec that links no review
 is not gated (nor is a `notice`, which carries no `status`). There is
 deliberately no rule that invalidates a signature when a spec changes after
 its review — the driver decides when re-review is warranted, and the
-permanent IDs and `[NEW]`/`[UPDATED]` markers make "what changed since you
-last looked" cheap to communicate without restating anything. We want a
-baseline of how teams actually use reviews (how many people read,
-acknowledge, comment) before hardening anything further.
+`[NEW]`/`[UPDATED]` markers (plus contiguous `FR-N`/`TC-N` ids) make "what
+changed since you last looked" cheap to communicate without restating
+anything. We want a baseline of how teams actually use reviews (how many
+people read, acknowledge, comment) before hardening anything further.
 
 ---
 
