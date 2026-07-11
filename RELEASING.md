@@ -132,8 +132,10 @@ No version bump required if you did not change `cli/` or `action.yml`. Adapters 
 |---------|-----|
 | `Version bump required` CI failed | Add changeset + run `pnpm run changeset:version`, commit |
 | `publish:check` version mismatch | Run `pnpm run changeset:version` or `node scripts/sync-versions.mjs` |
+| `publish:check --check-npm` fails right after publish | Registry lag; the check queries the exact version (not `latest`) and retries. Re-run the job if it still fails after a minute. |
 | `NPM_TOKEN` missing in release | Add secret (step 1 above) |
 | npm 404 on `npx @rosenjcb/spec-md` | First publish not done yet (step 1 above) |
+| Tag exists but no GitHub Release / npm package | Tag was created without the publish steps (or verify used to block the release). Create the release from the tag in the GitHub UI, or `npm publish` from `cli/` if the version is missing on npm. |
 | Action works on `@main` but not Marketplace | First marketplace release not published (step 2 above) |
 | Tag already exists | Expected when re-running `main` without a version bump; publish/release steps skip (no-op) |
 

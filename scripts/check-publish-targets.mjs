@@ -15,6 +15,18 @@ function readJson(root, relPath) {
   return JSON.parse(readFileSync(path.join(root, relPath), 'utf-8'))
 }
 
+/** Look up a specific version on npm (not the `latest` dist-tag). */
+export function lookupNpmPackageVersion(pkg, version) {
+  try {
+    return execSync(`npm view ${pkg}@${version} version --prefer-online`, {
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim()
+  } catch {
+    return null
+  }
+}
+
 /**
  * @param {{
  *   root?: string
@@ -76,16 +88,12 @@ export function evaluatePublishTargets(options = {}) {
   if (checkNpm) {
     let published = options.npmVersion
     if (published === undefined && !options.npmLookupError) {
-      try {
-        published = execSync(`npm view ${NPM_PACKAGE} version`, { encoding: 'utf-8' }).trim()
-      } catch {
-        published = null
-      }
+      published = lookupNpmPackageVersion(NPM_PACKAGE, cliVersion)
     }
 
     if (options.npmLookupError || published === null) {
       errors.push(
-        `${NPM_PACKAGE} is not on npm yet — run the first publish steps in RELEASING.md`
+        `${NPM_PACKAGE}@${cliVersion} is not on npm yet — run the first publish steps in RELEASING.md`
       )
     } else if (published !== cliVersion) {
       errors.push(`npm registry has ${published} but repo is ${cliVersion}`)
@@ -97,8 +105,33 @@ export function evaluatePublishTargets(options = {}) {
   return { ok: errors.length === 0, errors, notes }
 }
 
+function sleepSync(ms) {
+  execSync(`sleep ${Math.max(1, Math.ceil(ms / 1000))}`, { stdio: 'ignore' })
+}
+
+/**
+ * Post-publish registry replicas lag; retry the exact-version check with backoff.
+ * @param {{ retries?: number, delayMs?: number }} [options]
+ */
+export function evaluatePublishTargetsWithNpmRetry(options = {}) {
+  const retries = options.retries ?? 5
+  const delayMs = options.delayMs ?? 2000
+  let result = evaluatePublishTargets({ checkNpm: true })
+  for (let attempt = 1; !result.ok && attempt < retries; attempt++) {
+    const npmError = result.errors.some(e => e.includes('is not on npm yet') || e.includes('npm registry'))
+    if (!npmError) break
+    console.error(`⏳ npm not ready (attempt ${attempt}/${retries}), retrying in ${delayMs}ms…`)
+    sleepSync(delayMs)
+    result = evaluatePublishTargets({ checkNpm: true })
+  }
+  return result
+}
+
 function main() {
-  const result = evaluatePublishTargets({ checkNpm: process.argv.includes('--check-npm') })
+  const checkNpm = process.argv.includes('--check-npm')
+  const result = checkNpm
+    ? evaluatePublishTargetsWithNpmRetry()
+    : evaluatePublishTargets({ checkNpm: false })
   for (const note of result.notes) console.log(`✓ ${note}`)
   if (!result.ok) {
     for (const error of result.errors) console.error(`❌ ${error}`)
