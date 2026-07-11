@@ -212,7 +212,7 @@ test('evaluatePublishTargets reports missing npm package', () => {
     writePublishFixture(dir, '1.0.0')
     const result = evaluatePublishTargets({ root: dir, checkNpm: true, npmLookupError: true })
     assert.equal(result.ok, false)
-    assert.match(result.errors.join(' '), /not on npm yet/)
+    assert.match(result.errors.join(' '), /@1\.0\.0 is not on npm yet/)
   })
 })
 
@@ -222,6 +222,15 @@ test('evaluatePublishTargets accepts matching npm version', () => {
     const result = evaluatePublishTargets({ root: dir, checkNpm: true, npmVersion: '1.0.0' })
     assert.equal(result.ok, true, result.errors.join('; '))
     assert.match(result.notes.join(' '), /npm registry/)
+  })
+})
+
+test('evaluatePublishTargets fails when exact npm version is absent', () => {
+  withTempDir(dir => {
+    writePublishFixture(dir, '1.0.0')
+    const result = evaluatePublishTargets({ root: dir, checkNpm: true, npmVersion: null })
+    assert.equal(result.ok, false)
+    assert.match(result.errors.join(' '), /@1\.0\.0 is not on npm yet/)
   })
 })
 

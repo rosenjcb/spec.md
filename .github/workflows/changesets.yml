@@ -76,10 +76,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Verify npm publish
-        if: steps.tag.outputs.created == 'true'
-        run: pnpm run publish:check -- --check-npm
-
+      # Cut the GitHub Release before the npm verify step so registry
+      # replication lag cannot skip the release after a successful publish.
       - name: Create GitHub Release
         if: steps.tag.outputs.created == 'true'
         uses: softprops/action-gh-release@v2
@@ -106,3 +104,8 @@ jobs:
             > On the first release, open the release in GitHub and enable marketplace publishing manually.
             > See [RELEASING.md](https://github.com/rosenjcb/spec.md/blob/main/RELEASING.md).
           generate_release_notes: true
+
+      # Checks the exact version (not `latest`) and retries on registry lag.
+      - name: Verify npm publish
+        if: steps.tag.outputs.created == 'true'
+        run: pnpm run publish:check -- --check-npm
