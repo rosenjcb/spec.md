@@ -6,6 +6,7 @@ import {
   mkdirSync,
   writeFileSync,
   readFileSync,
+  readdirSync,
   rmSync,
 } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -341,6 +342,108 @@ test('syncAdapters --check reports drift', () => {
 test('real repo adapters are in sync with SKILL.md', () => {
   const { drift } = syncAdapters(root, { check: true })
   assert.deepEqual(drift, [])
+})
+
+console.log('\nplugin invocation nomenclature')
+/**
+ * Claude Code invokes plugin commands as `/<plugin.name>:<filename-stem>`.
+ * Filenames must be action-only (update.md → /spec-md:update). Putting
+ * `spec` or `spec-md` in the filename produces /spec-md:spec-update — the
+ * bug we already shipped once. Do not "fix" this by renaming to
+ * spec:update.md; colons in filenames are not a substitute for the plugin
+ * namespace.
+ */
+const EXPECTED_COMMAND_FILES = ['check.md', 'coverage.md', 'new.md', 'update.md']
+const EXPECTED_INVOCATIONS = [
+  '/spec-md:check',
+  '/spec-md:coverage',
+  '/spec-md:new',
+  '/spec-md:update',
+]
+const FORBIDDEN_INVOCATION_SUBSTRINGS = [
+  '/spec:update',
+  '/spec:check',
+  '/spec:coverage',
+  '/spec-update',
+  '/spec-check',
+  '/spec-coverage',
+  '/spec-md:spec-',
+  '/spec-md:spec:',
+  '/spec-md:spec.',
+  '`/spec`',
+  '/spec orders',
+  '/spec ',
+]
+
+test('command files are action-only; plugin+skill brand is spec-md', () => {
+  const files = readdirSync(join(root, 'commands'))
+    .filter(f => f.endsWith('.md'))
+    .sort()
+  assert.deepEqual(
+    files,
+    EXPECTED_COMMAND_FILES,
+    `commands/*.md must be exactly ${EXPECTED_COMMAND_FILES.join(', ')} — ` +
+      `Claude maps each to /spec-md:<stem>`
+  )
+
+  for (const file of files) {
+    assert.equal(file.includes(':'), false, `${file}: no colon in filename`)
+    assert.equal(
+      /^(spec|spec-md)[-.]/.test(file),
+      false,
+      `${file}: must not start with spec-/spec-md- (double-prefix under plugin spec-md)`
+    )
+  }
+
+  const plugin = JSON.parse(
+    readFileSync(join(root, '.claude-plugin/plugin.json'), 'utf8')
+  )
+  assert.equal(plugin.name, 'spec-md')
+
+  const marketplace = JSON.parse(
+    readFileSync(join(root, '.claude-plugin/marketplace.json'), 'utf8')
+  )
+  assert.equal(marketplace.name, 'spec-md')
+  assert.equal(marketplace.plugins[0]?.name, 'spec-md')
+
+  const skillRaw = readFileSync(join(root, 'SKILL.md'), 'utf8')
+  const { fm } = splitSkillMarkdown(skillRaw)
+  assert.equal(fm.name, 'spec-md')
+
+  const pluginSkill = readFileSync(join(root, 'skills/spec-md/SKILL.md'), 'utf8')
+  assert.equal(splitSkillMarkdown(pluginSkill).fm.name, 'spec-md')
+
+  // Derive the live invocation strings from disk — do not hardcode a second map.
+  const derived = files.map(f => `/${plugin.name}:${f.replace(/\.md$/, '')}`).sort()
+  assert.deepEqual(derived, [...EXPECTED_INVOCATIONS].sort())
+})
+
+test('docs and manifests advertise /spec-md:<action>, not stale /spec:* forms', () => {
+  const surfaces = [
+    'README.md',
+    'INSTALL.md',
+    '.claude-plugin/plugin.json',
+    '.claude-plugin/marketplace.json',
+    'commands/new.md',
+  ]
+  for (const rel of surfaces) {
+    const text = readFileSync(join(root, rel), 'utf8')
+    for (const inv of EXPECTED_INVOCATIONS) {
+      // new.md only needs to mention update as the sibling command
+      if (rel === 'commands/new.md' && inv !== '/spec-md:update') continue
+      assert.ok(
+        text.includes(inv),
+        `${rel} must mention ${inv}`
+      )
+    }
+    for (const bad of FORBIDDEN_INVOCATION_SUBSTRINGS) {
+      assert.equal(
+        text.includes(bad),
+        false,
+        `${rel} still advertises forbidden form ${JSON.stringify(bad)}`
+      )
+    }
+  }
 })
 
 console.log('\nscript CLIs')
