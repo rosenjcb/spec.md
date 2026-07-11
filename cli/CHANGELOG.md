@@ -1,5 +1,11 @@
 # @rosenjcb/spec-md
 
+## 0.3.3
+
+### Patch Changes
+
+- Rename Claude Code plugin subcommands from dash form (`/spec-update`, `/spec-check`, `/spec-coverage`) to colon form (`/spec:update`, `/spec:check`, `/spec:coverage`).
+
 ## 0.3.2
 
 ### Patch Changes

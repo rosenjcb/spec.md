@@ -6,7 +6,7 @@ argument-hint: <domain or path, e.g. "orders" or src/billing>
 Create a `*.spec.md` for: **$ARGUMENTS**
 
 Use the **spec-md** skill. Triage first (skill Step 0): confirm no spec
-already covers this domain (otherwise use `/spec-update`), and decide from
+already covers this domain (otherwise use `/spec:update`), and decide from
 the request's scale whether stakeholder sign-off will be needed — classify
 when clear, ask only when not. Then follow the "create" path:
 

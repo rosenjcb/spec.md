@@ -25,8 +25,8 @@ spec.md ships in two layers you can mix and match:
 
 ## 1. Claude Code plugin (recommended)
 
-Installs the skill **and** the `/spec`, `/spec-update`, `/spec-check`, and
-`/spec-coverage` commands in one step.
+Installs the skill **and** the `/spec`, `/spec:update`, `/spec:check`, and
+`/spec:coverage` commands in one step.
 
 ```
 /plugin marketplace add rosenjcb/spec.md
@@ -37,9 +37,9 @@ Then in any session:
 
 ```
 /spec orders            # author a new spec for the orders domain
-/spec-update orders     # reconcile it with the current code
-/spec-check             # lint every spec in the repo
-/spec-coverage          # which TC-N are missing a [TC-N] test?
+/spec:update orders     # reconcile it with the current code
+/spec:check             # lint every spec in the repo
+/spec:coverage          # which TC-N are missing a [TC-N] test?
 ```
 
 ## 2. Claude Code skill only
