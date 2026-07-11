@@ -47,6 +47,9 @@ in Step 5, once there is a spec to derive it from.
 The critical update rule: **`FR-N` and `TC-N` IDs are permanent.** Test names
 tag back to them via `[TC-N]`, so renumbering silently breaks that link. Never
 reuse or shift an ID — only append new ones and retire obsolete ones in place.
+**Table order is not identity:** after every insert, remove, or edit, reorder
+the FR/TC rows so the tables stay readable (see Step 2u) — shuffle rows, never
+renumber them.
 
 ## Step 1: Gather context
 
@@ -163,21 +166,42 @@ row is a deterministic, concrete check — exact input, exact expected outcome.
 ```
 
 Cover happy path first, then edge cases, then error conditions. Group related
-cases under the FR they belong to. Be concrete: `[owner, downlineA, unrelated]`
-beats "a mixed array".
+cases under the FR they belong to — the TC table should read as FR clusters,
+not as a chronological dump of whatever was typed last. Be concrete:
+`[owner, downlineA, unrelated]` beats "a mixed array".
 
 ## Step 2u: Update the spec
 
 Edit the existing file in place — keep the prose and IDs that still hold, change
 only what drifted. Apply the same section rules as Step 2, plus:
 
-- **Preserve IDs.** Never renumber. New requirements take the next free `FR-N`;
-  new cases take the next free `TC-N`. Gaps from retired IDs are fine.
+- **Preserve IDs.** Never renumber. Gaps from retired IDs are fine. New
+  requirements take the next free `FR-N`; new cases take the next free `TC-N`.
+- **Allocate the next free id carefully.** Before adding a row, scan the
+  entire FR and TC tables — including `[REMOVED]` rows — for the highest `N`
+  already in use. The next id is `max + 1`. Never invent a mid-range number,
+  never reuse a retired id, and never copy an id from another spec. If a
+  duplicate id is already present, keep the older row's id and reassign the
+  newer colliding row to the next free id (and update any `[TC-N]` test tags
+  that pointed at the collision).
+- **Reorder rows after every edit.** Table order is presentation; ids are
+  identity. Whenever you insert, remove, or edit any `FR-N` / `TC-N` row, do a
+  cleanup pass and reshuffle the tables so they read cleanly:
+  - **FR table:** domain / lifecycle order (e.g. create → compute → constrain
+    → reject), not insertion chronology.
+  - **TC table:** group by the `FR-N` each case proves; within each group,
+    happy path, then edge cases, then errors.
+  Non-sequential ids inside a group are expected and fine (`TC-1`, `TC-84`,
+  `TC-2` under the same FR after later additions). What is not fine is leaving
+  newly appended high-N rows stranded between unrelated low-N rows, or leaving
+  the table in the order you happened to type. Shuffle rows; never renumber to
+  "fix" gaps.
 - **Edit a row in place** when behavior changed but the requirement is the same —
   update its text, not its number.
 - **Mark removed behavior** rather than deleting silently: append `[REMOVED]` to
   the row (and remove its `[TC-N]` tests) so reviewers see the change. Delete
-  outright only once nothing references the ID.
+  outright only once nothing references the ID. After retiring or deleting,
+  still run the reorder cleanup above so the remaining rows stay grouped.
 - **Mark new or changed rows** with `[NEW]` or `[UPDATED]` while the change is in
   review; drop the marker once merged.
 - **Reconcile metadata.** Update `sources`/`tests` if paths moved, and always
@@ -203,6 +227,9 @@ tag it `[smoke]` if it is not an acceptance criterion.
 - Mark ambiguous behavior with `??` and call it out.
 - Note known mismatches between code and spec in a short "Known issues" section.
 - Flag any `FR-N` with no `TC-N`, and any `TC-N` with no `[TC-N]` test.
+- Flag duplicate `FR-N` / `TC-N` ids (collisions) and fix them before finishing.
+- Flag FR/TC tables whose row order no longer groups by domain / by `FR-N`
+  (happy → edge → error); reorder as part of the same edit.
 
 ## Step 5: The review record (only if triage said so)
 
@@ -253,4 +280,7 @@ over Slack or email. Do not build or wire up notification machinery.
 - **Living, not frozen.** Enough detail to remove ambiguity, not so much rigidity
   that it goes stale. Update `timestamp` and the relevant rows as the system
   evolves rather than rewriting wholesale.
+- **Table hygiene.** After every insert, remove, or edit: verify id uniqueness,
+  allocate the next free id from a full-table scan, and reorder FR/TC rows for
+  readability. Never renumber to close gaps; never leave a jumbled table.
 - **Succinct.** No filler, no restating the obvious.

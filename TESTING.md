@@ -135,6 +135,9 @@ proves the logic, the other proves the wiring. Both point at the same spec row.
 - [ ] The tag refers to a real row in the `*.spec.md` (or a deliberate
       non-spec tag like `[smoke]`).
 - [ ] Names read as Given / When / Then where it helps (optional).
+- [ ] Spec FR/TC tables are grouped for reading (by FR; happy → edge → error).
+      Reordering rows is fine and expected; **never renumber** ids to match
+      table order — the `[TC-N]` tags in this suite are the join key.
 
 For a worked example, see [`examples/pizza-ts`](./examples/pizza-ts): one
 [`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) with `TC-1..TC-9`,

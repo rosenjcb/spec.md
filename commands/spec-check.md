@@ -21,5 +21,7 @@ by hand:
 - `sources`/`tests` paths resolve on disk.
 
 Report the results grouped by file. For each **error**, propose the fix
-(preserving ids — never renumber). Do not edit specs unless I ask; summarize
-first.
+(preserving ids — never renumber; if duplicates collide, keep the older id and
+reassign the newer row to `max + 1`). If the tables are jumbled, propose a
+reorder (group TC by FR; happy → edge → error) without changing ids. Do not
+edit specs unless I ask; summarize first.
