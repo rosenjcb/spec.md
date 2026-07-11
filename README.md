@@ -9,7 +9,7 @@
 <p><em>The constraint is no longer implementation speed.<br />The constraint is alignment.</em></p>
 
 <p>
-  <img src="https://img.shields.io/badge/version-0.3.2-6366F1" alt="Version" />
+  <img src="https://img.shields.io/badge/version-0.3.3-6366F1" alt="Version" />
   <img src="https://img.shields.io/badge/status-draft-8B5CF6" alt="Status: draft" />
   <img src="https://img.shields.io/badge/built%20on-Open%20Knowledge%20Format-22C55E" alt="Built on Open Knowledge Format" />
 </p>
@@ -23,7 +23,7 @@
 Get spec.md into your project in one line. Full guide: **[INSTALL.md](./INSTALL.md)**.
 
 ```bash
-# Claude Code — plugin (skill + /spec, /spec-check, /spec-coverage commands)
+# Claude Code — plugin (skill + /spec, /spec:update, /spec:check, /spec:coverage commands)
 /plugin marketplace add rosenjcb/spec.md
 /plugin install spec-md@spec-md
 
@@ -36,7 +36,7 @@ npx @rosenjcb/spec-md check
 
 | Surface | What you get |
 |---------|--------------|
-| **Claude Code plugin** | The skill plus `/spec`, `/spec-update`, `/spec-check`, `/spec-coverage`. |
+| **Claude Code plugin** | The skill plus `/spec`, `/spec:update`, `/spec:check`, `/spec:coverage`. |
 | **`install.sh` / `install.ps1`** | The skill for Claude Code and rule files for Cursor, Windsurf, Cline, Copilot, and a portable `AGENTS.md`. |
 | **[`spec-md` CLI](./cli)** | `lint`, `coverage`, `check`, `list`, `new` — validate specs and enforce `[TC-N]` coverage. |
 | **[GitHub Action](./action.yml)** | `uses: rosenjcb/spec.md@main` — fail CI when a spec drifts or a test case loses its test. |
