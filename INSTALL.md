@@ -25,8 +25,13 @@ spec.md ships in two layers you can mix and match:
 
 ## 1. Claude Code plugin (recommended)
 
-Installs the skill **and** the `/spec`, `/spec:update`, `/spec:check`, and
-`/spec:coverage` commands in one step.
+Installs the skill **and** the `/spec-md:new`, `/spec-md:update`,
+`/spec-md:check`, and `/spec-md:coverage` commands in one step.
+
+Claude Code namespaces plugin commands as `/<plugin>:<file-stem>`. The plugin
+is named `spec-md`, so command files are **action-only** (`commands/update.md`
+→ `/spec-md:update`). Do not put `spec` or `spec-md` in the filename — the
+plugin prefix is already applied, and a `spec-…` stem double-prefixes.
 
 ```
 /plugin marketplace add rosenjcb/spec.md
@@ -36,11 +41,35 @@ Installs the skill **and** the `/spec`, `/spec:update`, `/spec:check`, and
 Then in any session:
 
 ```
-/spec orders            # author a new spec for the orders domain
-/spec:update orders     # reconcile it with the current code
-/spec:check             # lint every spec in the repo
-/spec:coverage          # which TC-N are missing a [TC-N] test?
+/spec-md:new orders         # author a new spec for the orders domain
+/spec-md:update orders      # reconcile it with the current code
+/spec-md:check              # lint every spec in the repo
+/spec-md:coverage           # which TC-N are missing a [TC-N] test?
 ```
+
+The bundled skill is also named `spec-md` (same brand as the CLI and plugin).
+
+### QA — confirm invocation names (do not skip)
+
+After install or any rename of `commands/*.md`, verify **in Claude Code**, not
+from filenames alone:
+
+1. Type `/spec-md` and read the autocomplete list.
+2. Expect exactly: `/spec-md:new`, `/spec-md:update`, `/spec-md:check`,
+   `/spec-md:coverage` (plus the `spec-md` skill entry).
+3. Fail on double-prefixed stems (an extra `spec-…` segment after the plugin
+   name), on commands that drop the `md` brand, or on dash-joined legacy
+   stems. Filenames are not proof — Claude's autocomplete is.
+4. Run `pnpm test` — the `plugin invocation nomenclature` suite locks
+   filenames, plugin/skill `name: spec-md`, and doc strings to this map.
+
+| Surface | Brand | Actions |
+|---------|-------|---------|
+| Claude plugin commands | `/spec-md:` | `new`, `update`, `check`, `coverage` |
+| Claude skill | `spec-md` | (create/update guidance) |
+| CLI | `spec-md` | `new`, `lint`, `check`, `coverage`, `list` |
+| npm | `@rosenjcb/spec-md` | — |
+| Plugin install | `spec-md@spec-md` | — |
 
 ## 2. Claude Code skill only
 

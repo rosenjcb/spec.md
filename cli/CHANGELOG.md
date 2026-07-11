@@ -1,5 +1,11 @@
 # @rosenjcb/spec-md
 
+## 0.3.4
+
+### Patch Changes
+
+- Fix Claude Code plugin command names: files are action-only (`update.md`, `check.md`, `coverage.md`, `new.md`) so invocations are `/spec-md:update`, `/spec-md:check`, `/spec-md:coverage`, `/spec-md:new`. Previous `spec:update.md` / `spec-update.md` stems double-prefixed under plugin `spec-md`. Docs and a regression test lock the mapping.
+
 ## 0.3.3
 
 ### Patch Changes
