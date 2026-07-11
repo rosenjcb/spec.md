@@ -44,9 +44,12 @@ questions, not a quiz — only when it is not.
 The review decision is made **here, up front**; the record itself is written
 in Step 5, once there is a spec to derive it from.
 
-The critical update rule: **`FR-N` and `TC-N` IDs are permanent.** Test names
-tag back to them via `[TC-N]`, so renumbering silently breaks that link. Never
-reuse or shift an ID — only append new ones and retire obsolete ones in place.
+The critical update rule: **`FR-N` and `TC-N` ids must stay contiguous and
+ascending** — `FR-1..FR-n` and `TC-1..TC-n` in table order, no skips, no
+jumbled mid-table inserts. `spec-md lint` enforces this. Default edit is
+append-only (`n + 1` at the end). Cleanup that reshuffles rows must renumber
+`1..n` in the new order and update every matching `[TC-N]` test tag in the
+same change — never leave gaps or out-of-order ids.
 
 ## Step 1: Gather context
 
@@ -70,7 +73,11 @@ Naming: `<domain>.spec.md` (e.g. `order.spec.md`). Place it wherever fits the
 project — next to the code it describes (`src/orders/order.spec.md`) or in a
 dedicated specs directory. Location does not matter; `sources` and `tests` are
 relative to the spec file, so set those paths to match wherever you put it.
-Keep every section tight — each sentence earns its place.
+Keep every section tight — each sentence earns its place. **Golden rule:** the
+more filler a reader must skim, the less the spec compels. Prefer a short
+spec that links to deeper material ([TESTING.md](./TESTING.md),
+[REVIEW.md](./REVIEW.md), examples) over pasting checklists or restating
+companion docs inline.
 
 ### Metadata (frontmatter)
 
@@ -162,26 +169,46 @@ row is a deterministic, concrete check — exact input, exact expected outcome.
 | TC-4 | FR-4 | Empty items list | 400 validation error |
 ```
 
-Cover happy path first, then edge cases, then error conditions. Group related
-cases under the FR they belong to. Be concrete: `[owner, downlineA, unrelated]`
-beats "a mixed array".
+Cover happy path first, then edge cases, then error conditions. Prefer writing
+related cases under the FR they belong to **in the order you want them to keep**
+— ids will be `TC-1..TC-n` in that table order. Be concrete:
+`[owner, downlineA, unrelated]` beats "a mixed array".
 
 ## Step 2u: Update the spec
 
 Edit the existing file in place — keep the prose and IDs that still hold, change
 only what drifted. Apply the same section rules as Step 2, plus:
 
-- **Preserve IDs.** Never renumber. New requirements take the next free `FR-N`;
-  new cases take the next free `TC-N`. Gaps from retired IDs are fine.
+- **Keep ids contiguous and ascending.** Every FR/TC table must be exactly
+  `FR-1..FR-n` / `TC-1..TC-n` in row order — no skips, no out-of-order rows.
+  `spec-md lint` fails otherwise.
+- **Default: append.** New requirements / cases take `n + 1` and go at the
+  **end** of the table. Scan the table for the current count (and confirm it
+  matches the highest `N`) before allocating. Never invent a mid-range id
+  (`TC-84` when the table ends at `TC-4`), never reuse a live id, never copy
+  an id from another spec.
+- **Cleanup after every insert / remove / edit.** If rows are jumbled, skipped,
+  or clustered wrong:
+  1. Reorder for readability — FR by domain/lifecycle; TC by the `FR-N` they
+     prove (happy → edge → error within each group).
+  2. **Renumber** the table to `1..n` in that new order.
+  3. Update every `[TC-N]` test tag (and any review briefings citing ids) to
+     match — in the same change.
+  Do not leave `TC-1, TC-2, TC-84, TC-3`. Do not renumber without updating tags.
 - **Edit a row in place** when behavior changed but the requirement is the same —
-  update its text, not its number.
+  update its text, not its number (append-only path).
 - **Mark removed behavior** rather than deleting silently: append `[REMOVED]` to
-  the row (and remove its `[TC-N]` tests) so reviewers see the change. Delete
-  outright only once nothing references the ID.
+  the row (and remove its `[TC-N]` tests) so reviewers see the change. A
+  `[REMOVED]` row still occupies its index (sequence stays contiguous). When
+  nothing references it anymore, delete the row and **compact**: renumber the
+  remainder to `1..n` and update tags.
 - **Mark new or changed rows** with `[NEW]` or `[UPDATED]` while the change is in
   review; drop the marker once merged.
 - **Reconcile metadata.** Update `sources`/`tests` if paths moved, and always
   bump `timestamp` to the current time.
+- **Finish with lint.** Run `spec-md lint` (or `check`) on the file and fix any
+  sequence / duplicate / dangling-reference errors before considering the
+  update done.
 
 ## Step 3: Link the tests
 
@@ -203,6 +230,8 @@ tag it `[smoke]` if it is not an acceptance criterion.
 - Mark ambiguous behavior with `??` and call it out.
 - Note known mismatches between code and spec in a short "Known issues" section.
 - Flag any `FR-N` with no `TC-N`, and any `TC-N` with no `[TC-N]` test.
+- Flag duplicate ids, skipped numbers, or out-of-order FR/TC rows — fix by
+  reordering then renumbering `1..n` and updating `[TC-N]` tags before finishing.
 
 ## Step 5: The review record (only if triage said so)
 
@@ -245,6 +274,12 @@ over Slack or email. Do not build or wire up notification machinery.
 
 ## Principles
 
+- **Succinct, then deeper.** More prose a reader must wade through, less likely
+  they are compelled by the spec. Keep the `*.spec.md` short: intent, scope,
+  `FR-N`, `TC-N`. Link out for depth — [TESTING.md](./TESTING.md),
+  [REVIEW.md](./REVIEW.md), examples — instead of pasting checklists or
+  restating companion docs. Each layer earns its place; nothing repeats what
+  the layer above already said.
 - **Derive from the code.** If the code branches on it, a requirement and a test
   case should cover it — including null/unknown values.
 - **Concrete over abstract.** Exact inputs and outputs, not descriptions of them.
@@ -253,4 +288,6 @@ over Slack or email. Do not build or wire up notification machinery.
 - **Living, not frozen.** Enough detail to remove ambiguity, not so much rigidity
   that it goes stale. Update `timestamp` and the relevant rows as the system
   evolves rather than rewriting wholesale.
-- **Succinct.** No filler, no restating the obvious.
+- **Table hygiene.** After every insert, remove, or edit: tables must stay
+  `FR-1..FR-n` / `TC-1..TC-n` ascending with no skips. Reorder for readability,
+  then renumber and update `[TC-N]` tags when needed. Lint is the gate.

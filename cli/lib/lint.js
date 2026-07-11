@@ -6,6 +6,25 @@ const ISO_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})
 
 const URL_RE = /^[a-z][a-z0-9+.-]*:\/\//i;
 
+/**
+ * FR/TC tables must list ids as prefix-1 .. prefix-n in ascending order with
+ * no skips. Position i (0-based) must be exactly `${prefix}-${i + 1}`.
+ */
+export function checkIdSequence(rows, prefix, label, err) {
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row.valid) continue;
+    const expected = `${prefix}-${i + 1}`;
+    if (row.id !== expected) {
+      err(
+        `${label} ids must be contiguous and ascending from ${prefix}-1 ` +
+          `(expected ${expected} in this row, found ${row.id})`,
+        row.line,
+      );
+    }
+  }
+}
+
 function eachResource(value, fn) {
   if (value == null || value === "") return;
   const values = Array.isArray(value) ? value : [value];
@@ -110,6 +129,7 @@ export function lintSpec(filePath, opts = {}) {
     }
     frIds.add(fr.id);
   }
+  checkIdSequence(spec.frs, "FR", "Functional Requirement", err);
 
   // --- QA Test Cases ---
   if (!spec.sawTcTable) {
@@ -137,6 +157,7 @@ export function lintSpec(filePath, opts = {}) {
       }
     }
   }
+  checkIdSequence(spec.tcs, "TC", "Test case", err);
 
   // Every FR should be proven by at least one TC.
   for (const fr of spec.frs) {

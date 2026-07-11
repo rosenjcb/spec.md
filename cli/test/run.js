@@ -97,6 +97,19 @@ test("lint flags duplicate FR ids and dangling FR references", () => {
   );
 });
 
+test("lint flags skipped and out-of-order FR/TC ids", () => {
+  withTempSpec(
+    `---\ntype: Spec\ntitle: Jumbled\n---\n### Functional Requirements\n| ID | Requirement |\n|----|----|\n| FR-1 | a |\n| FR-3 | b |\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n| TC-2 | FR-1 | x | y |\n| TC-84 | FR-3 | x | y |\n| TC-3 | FR-3 | x | y |\n`,
+    (_dir, file) => {
+      const { code, out } = run(["lint", file]);
+      assert.equal(code, 1, out);
+      assert.match(out, /expected FR-2 in this row, found FR-3/);
+      assert.match(out, /expected TC-3 in this row, found TC-84/);
+      assert.match(out, /expected TC-4 in this row, found TC-3/);
+    },
+  );
+});
+
 test("coverage --strict exits non-zero when a TC has no test", () => {
   withTempSpec(
     `---\ntype: Spec\ntitle: Uncovered\n---\n### QA Test Cases\n| Test ID | Requirement | Scenario | Expected Outcome |\n|--|--|--|--|\n| TC-1 | FR-1 | x | y |\n`,

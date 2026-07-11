@@ -1,5 +1,11 @@
 # @rosenjcb/spec-md
 
+## 0.3.2
+
+### Patch Changes
+
+- Lint FR/TC tables for contiguous ascending ids (`FR-1..FR-n`, `TC-1..TC-n`) so jumbled or skipped indexes fail `spec-md lint` / `check`. Skill and agent adapters teach append-by-default cleanup that renumbers with matching `[TC-N]` tag updates.
+
 ## 0.3.1
 
 ### Patch Changes

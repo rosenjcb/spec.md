@@ -128,15 +128,11 @@ proves the logic, the other proves the wiring. Both point at the same spec row.
 
 ---
 
-## Checklist
+## Verify
 
-- [ ] Every `TC-N` in the spec has at least one `[TC-N]` test.
-- [ ] Each test name starts with its bracketed tag.
-- [ ] The tag refers to a real row in the `*.spec.md` (or a deliberate
-      non-spec tag like `[smoke]`).
-- [ ] Names read as Given / When / Then where it helps (optional).
+`npx @rosenjcb/spec-md check` covers tag coverage and contiguous `TC-N` /
+`FR-N` order. The join key is the bracketed `[TC-N]` prefix — see above.
 
-For a worked example, see [`examples/pizza-ts`](./examples/pizza-ts): one
+Worked example: [`examples/pizza-ts`](./examples/pizza-ts) —
 [`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) with `TC-1..TC-9`,
-mirrored by tagged unit tests in `test/` and tagged integration requests in
-`http/`.
+tagged unit tests in `test/`, tagged `.http` requests in `http/`.
