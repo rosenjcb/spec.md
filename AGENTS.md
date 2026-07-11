@@ -73,7 +73,11 @@ Naming: `<domain>.spec.md` (e.g. `order.spec.md`). Place it wherever fits the
 project — next to the code it describes (`src/orders/order.spec.md`) or in a
 dedicated specs directory. Location does not matter; `sources` and `tests` are
 relative to the spec file, so set those paths to match wherever you put it.
-Keep every section tight — each sentence earns its place.
+Keep every section tight — each sentence earns its place. **Golden rule:** the
+more filler a reader must skim, the less the spec compels. Prefer a short
+spec that links to deeper material ([TESTING.md](./TESTING.md),
+[REVIEW.md](./REVIEW.md), examples) over pasting checklists or restating
+companion docs inline.
 
 ### Metadata (frontmatter)
 
@@ -270,6 +274,12 @@ over Slack or email. Do not build or wire up notification machinery.
 
 ## Principles
 
+- **Succinct, then deeper.** More prose a reader must wade through, less likely
+  they are compelled by the spec. Keep the `*.spec.md` short: intent, scope,
+  `FR-N`, `TC-N`. Link out for depth — [TESTING.md](./TESTING.md),
+  [REVIEW.md](./REVIEW.md), examples — instead of pasting checklists or
+  restating companion docs. Each layer earns its place; nothing repeats what
+  the layer above already said.
 - **Derive from the code.** If the code branches on it, a requirement and a test
   case should cover it — including null/unknown values.
 - **Concrete over abstract.** Exact inputs and outputs, not descriptions of them.
@@ -281,4 +291,3 @@ over Slack or email. Do not build or wire up notification machinery.
 - **Table hygiene.** After every insert, remove, or edit: tables must stay
   `FR-1..FR-n` / `TC-1..TC-n` ascending with no skips. Reorder for readability,
   then renumber and update `[TC-N]` tags when needed. Lint is the gate.
-- **Succinct.** No filler, no restating the obvious.

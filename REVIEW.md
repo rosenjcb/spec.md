@@ -373,33 +373,14 @@ people read, acknowledge, comment) before hardening anything further.
 
 ---
 
-## Checklist
+## Worked example
 
-- [ ] The record's frontmatter declares `type: Review`, its `spec`, `mode`,
-      and `milestone`; the goal is stated up front in the body.
-- [ ] The spec's `review` key and the record's `spec` key point at each
-      other.
-- [ ] The spec meets its milestone's reviewable minimum before the record
-      goes out.
-- [ ] The record pins the spec `revision` its briefings were derived from.
-- [ ] Every stakeholder gets a briefing crafted for their role, citing the
-      sections and IDs it summarizes — no generic section pointers, no
-      hand-maintained restatements.
-- [ ] One (or few) approvers; contributors have a deadline; informed are
-      asked for nothing.
-- [ ] A re-review regenerates the record in place — new `revision`, `status`
-      back to `open`, delta by `FR-N`/`TC-N` id; git history keeps the old
-      round.
-- [ ] The record lives next to the spec; any knowledge-base copy is a
-      mirror, not the source.
-
-For a worked example, see [`examples/pizza-ts`](./examples/pizza-ts):
+[`examples/pizza-ts`](./examples/pizza-ts):
 [`order.spec.md`](./examples/pizza-ts/specs/order.spec.md) links
-[`order.review.md`](./examples/pizza-ts/specs/order.review.md), an approved
-pre-build signoff carrying the roles, per-stakeholder briefings, and the
-approval state.
+[`order.review.md`](./examples/pizza-ts/specs/order.review.md) — an approved
+pre-build signoff with roles, per-stakeholder briefings, and approval state.
 
-### Appendix: Further reading
+### Further reading
 
 - Atlassian Team Playbook, DACI: https://www.atlassian.com/team-playbook/plays/daci
 - MADR — Markdown Architecture Decision Records: https://adr.github.io/madr/
